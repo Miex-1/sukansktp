@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SKTP Sports Day</title>
+<title>Hari Sukan 2025</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -60,8 +60,9 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 }
 
 /* ── NAV ── */
-#nav{position:sticky;top:0;z-index:100;background:rgba(8,8,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;scrollbar-width:none}
+#nav{position:sticky;top:0;z-index:100;background:rgba(8,8,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none}
 #nav::-webkit-scrollbar{display:none}
+.nav-inner{display:flex;align-items:center;gap:0;margin:0 auto;padding:0 1rem}
 .nav-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:14px 11px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;font-family:'Plus Jakarta Sans',sans-serif}
 .nav-btn:hover{color:var(--text)}
 .nav-btn.active{color:var(--kuning);border-bottom-color:var(--kuning)}
@@ -202,17 +203,19 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 
 <!-- NAVIGATION -->
 <nav id="nav">
-  <button class="nav-btn active" onclick="go('medal',this)">Kedudukan</button>
-  <button class="nav-btn" onclick="go('ppki',this)">PPKI</button>
-  <button class="nav-btn" onclick="go('prasekolah',this)">Pra Sekolah</button>
-  <button class="nav-btn" onclick="go('t1',this)">Tahun 1</button>
-  <button class="nav-btn" onclick="go('t2',this)">Tahun 2</button>
-  <button class="nav-btn" onclick="go('t3',this)">Tahun 3</button>
-  <button class="nav-btn" onclick="go('t4',this)">Tahun 4</button>
-  <button class="nav-btn" onclick="go('t5',this)">Tahun 5</button>
-  <button class="nav-btn" onclick="go('t6',this)">Tahun 6</button>
-  <button class="nav-btn" onclick="go('terbuka',this)">Terbuka</button>
-  <button class="nav-btn" onclick="go('perbarisan',this)">Perbarisan</button>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="go('medal',this)">Kedudukan</button>
+    <button class="nav-btn" onclick="go('ppki',this)">PPKI</button>
+    <button class="nav-btn" onclick="go('prasekolah',this)">Pra Sekolah</button>
+    <button class="nav-btn" onclick="go('t1',this)">Tahun 1</button>
+    <button class="nav-btn" onclick="go('t2',this)">Tahun 2</button>
+    <button class="nav-btn" onclick="go('t3',this)">Tahun 3</button>
+    <button class="nav-btn" onclick="go('t4',this)">Tahun 4</button>
+    <button class="nav-btn" onclick="go('t5',this)">Tahun 5</button>
+    <button class="nav-btn" onclick="go('t6',this)">Tahun 6</button>
+    <button class="nav-btn" onclick="go('terbuka',this)">Terbuka</button>
+    <button class="nav-btn" onclick="go('perbarisan',this)">Perbarisan</button>
+  </div>
 </nav>
 
 <!-- PAGE 1: KEDUDUKAN MEDAL -->
