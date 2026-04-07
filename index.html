@@ -1,699 +1,109 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hari Sukan 2025</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hari Sukan Live</title>
+
 <style>
-:root{
-  --bg:#080810;--surface:#10101c;--card:#16162a;--border:rgba(255,255,255,.07);
-  --text:#eeeef8;--muted:#6868a0;
-  --merah:#e8453c;--hijau:#2ecc71;--biru:#3c82e8;--kuning:#f5c842;
+body{background:#0b0b14;color:#fff;font-family:sans-serif;text-align:center;padding:20px}
+h1{margin-bottom:20px}
+
+/* CARD */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.card{
+  background:#16162a;
+  padding:20px;
+  border-radius:12px;
+  position:relative;
+  transition:all .4s ease;
+  transform:scale(1);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 
-/* ── NAV ── */
-#nav{position:sticky;top:0;z-index:100;background:rgba(8,8,16,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none}
-#nav::-webkit-scrollbar{display:none}
-.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--kuning);letter-spacing:.05em;padding:13px 14px 13px 0;border-right:1px solid var(--border);margin-right:6px;flex-shrink:0;white-space:nowrap}
-.nav-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:14px 11px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;font-family:'Plus Jakarta Sans',sans-serif}
-.nav-btn:hover{color:var(--text)}
-.nav-btn.active{color:var(--kuning);border-bottom-color:var(--kuning)}
-.nav-setup{margin-left:auto;flex-shrink:0;background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;white-space:nowrap}
-.nav-setup:hover{background:rgba(255,255,255,.05)}
-
-/* ── PAGES ── */
-.page{display:none;position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem}
-.page.active{display:block}
-
-/* ── PAGE HEADER ── */
-.ph{margin-bottom:1.5rem}
-.ph-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.05em}
-.ph-sub{font-size:13px;color:var(--muted);margin-top:2px}
-.ph-ts{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-top:6px}
-.rdot{width:5px;height:5px;border-radius:50%;background:#2ecc71;animation:blink 2s infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── SETUP ── */
-#setup-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);overflow-y:auto;padding:2rem 1rem}
-#setup-ov.open{display:block}
-#setup-box{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:660px;margin:0 auto;padding:1.75rem}
-#setup-box h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--kuning);letter-spacing:.05em;margin-bottom:.3rem}
-#setup-box p{color:var(--muted);font-size:13px;margin-bottom:1.25rem;line-height:1.6}
-#setup-box ol{color:var(--muted);font-size:13px;padding-left:1.2rem;margin-bottom:1rem;line-height:1.8}
-.url-row{margin-bottom:10px}
-.url-lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:3px;letter-spacing:.06em;text-transform:uppercase}
-.url-inp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:9px;font-size:12px;outline:none;transition:border-color .2s;font-family:'Plus Jakarta Sans',sans-serif}
-.url-inp:focus{border-color:var(--kuning)}
-.sa{display:flex;gap:8px;margin-top:1.25rem}
-.btn-save{background:var(--kuning);color:#080810;border:none;padding:9px 20px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer;transition:opacity .15s}
-.btn-save:hover{opacity:.85}
-.btn-cls{background:transparent;color:var(--muted);border:1px solid var(--border);padding:9px 20px;border-radius:9px;font-size:13px;cursor:pointer}
-.btn-cls:hover{background:rgba(255,255,255,.05)}
-
-/* ── MEDAL ── */
-.medal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.medal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;position:relative;overflow:hidden;transition:transform .2s}
-.medal-card:hover{transform:translateY(-2px)}
-.medal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--hc)}
-.mc-rank{font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;color:rgba(255,255,255,.04);position:absolute;right:1rem;top:0;pointer-events:none}
-.mc-house{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--hc);margin-bottom:6px}
-.mc-counts{display:flex;gap:14px;align-items:baseline}
-.mc-item{text-align:center}
-.mc-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:1}
-.mc-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
-.c-gold{color:#f5c842}.c-silver{color:#b8b8cc}.c-bronze{color:#c87941}.c-fourth{color:var(--muted)}
-
-/* ── SECTION TITLE ── */
-.stitle{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.05em;margin:1.75rem 0 .75rem;display:flex;align-items:center;gap:6px}
-.stitle-ac{color:var(--kuning)}
-
-/* ── SUKANEKA ── */
-.acara-block{margin-bottom:2rem}
-.acara-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--kuning);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.house-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.hcol{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.hcol-head{padding:8px 10px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.1em;text-transform:uppercase}
-.hcol-body{padding:4px 0;min-height:40px}
-.prow{display:flex;align-items:center;gap:7px;padding:5px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
-.prow:last-child{border-bottom:none}
-.pnum{font-size:10px;color:var(--muted);min-width:18px;flex-shrink:0}
-.pname{font-size:12px;color:var(--text);line-height:1.3}
-.pempty{font-size:11px;color:rgba(255,255,255,.15);font-style:italic;padding:6px 10px}
-.ked-row{padding:7px 10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:5px}
-.ked-val{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;line-height:1}
-.ked-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-
-/* ── OLAHRAGA ── */
-.ev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-.ev-head{padding:10px 14px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.ev-head:hover{background:rgba(255,255,255,.04)}
-.ev-name{font-weight:600;font-size:14px}
-.ev-tog{font-size:11px;color:var(--muted)}
-.ev-body{padding:12px 14px}
-.phase-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:10px 0 5px}
-.phase-lbl:first-child{margin-top:0}
-.ptable{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px}
-.ptable th{text-align:left;padding:5px 8px;color:var(--muted);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
-.ptable td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-.ptable tr:last-child td{border-bottom:none}
-.hbadge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
-
-/* ── TARIK TALI ── */
-.tt-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:1.5rem}
-.ttcol{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.ttcol-head{padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.ttcol-body{padding:4px 0}
-.ttrow{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
-.ttrow:last-child{border-bottom:none}
-.ttn{font-size:10px;color:var(--muted);min-width:18px;flex-shrink:0}
-.ttfoot{padding:7px 12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
-
-/* ── PERBARISAN ── */
-.pb-section{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
-.pb-sec-hd{padding:9px 14px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-.pb-table{width:100%;border-collapse:collapse;font-size:13px}
-.pb-table th{padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);text-align:left}
-.pb-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-.pb-table tr:last-child td{border-bottom:none}
-.pb-table td:first-child{color:var(--muted);font-size:12px}
-.pb-markah td{background:rgba(245,200,66,.05)}
-.pb-markah td:first-child{color:var(--kuning);font-weight:600}
-
-/* ── LOADING ── */
-.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px;line-height:1.7}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--kuning);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.no-url{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;font-size:13px;color:var(--muted);line-height:1.7}
-.no-url strong{color:var(--kuning)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .house-cols{grid-template-columns:repeat(2,1fr)}
-  .medal-grid{grid-template-columns:repeat(2,1fr)}
-  .tt-wrap{grid-template-columns:repeat(2,1fr)}
+/* ANIMATION */
+.card.updated{
+  animation:pop .5s ease;
 }
-@media(max-width:400px){
-  .house-cols{grid-template-columns:1fr 1fr}
+@keyframes pop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+  100%{transform:scale(1)}
 }
+
+/* CHAMPION */
+.card.rank1{
+  border:2px solid gold;
+  box-shadow:0 0 20px rgba(255,215,0,.6);
+}
+
+/* TEXT */
+.rank{font-size:40px;opacity:.1;position:absolute;right:10px;top:0}
+.house{font-size:18px;margin-bottom:10px}
+.points{font-size:28px;font-weight:bold}
 </style>
 </head>
+
 <body>
 
-<!-- NAVIGATION -->
-<nav id="nav">
-  <div class="nav-logo">HARI SUKAN</div>
-  <button class="nav-btn active" onclick="go('medal',this)">Kedudukan</button>
-  <button class="nav-btn" onclick="go('ppki',this)">PPKI</button>
-  <button class="nav-btn" onclick="go('prasekolah',this)">Pra Sekolah</button>
-  <button class="nav-btn" onclick="go('t1',this)">Tahun 1</button>
-  <button class="nav-btn" onclick="go('t2',this)">Tahun 2</button>
-  <button class="nav-btn" onclick="go('t3',this)">Tahun 3</button>
-  <button class="nav-btn" onclick="go('t4',this)">Tahun 4</button>
-  <button class="nav-btn" onclick="go('t5',this)">Tahun 5</button>
-  <button class="nav-btn" onclick="go('t6',this)">Tahun 6</button>
-  <button class="nav-btn" onclick="go('terbuka',this)">Terbuka</button>
-  <button class="nav-btn" onclick="go('perbarisan',this)">Perbarisan</button>
-  <button class="nav-setup" onclick="openSetup()">&#9881; URL</button>
-</nav>
+<h1>🏆 LIVE SCOREBOARD</h1>
 
-<!-- PAGE 1: KEDUDUKAN MEDAL -->
-<section id="page-medal" class="page active">
-  <div class="ph">
-    <div class="ph-title">Kedudukan Medal</div>
-    <div class="ph-sub">Keputusan keseluruhan mengikut rumah sukan — auto sort</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-medal">—</span></div>
-  </div>
-  <div id="con-medal"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 2: PPKI -->
-<section id="page-ppki" class="page">
-  <div class="ph">
-    <div class="ph-title">PPKI</div>
-    <div class="ph-sub">Program Pendidikan Khas Integrasi — 2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-ppki">—</span></div>
-  </div>
-  <div id="con-ppki"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 3: PRA SEKOLAH -->
-<section id="page-prasekolah" class="page">
-  <div class="ph">
-    <div class="ph-title">Pra Sekolah</div>
-    <div class="ph-sub">1 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-prasekolah">—</span></div>
-  </div>
-  <div id="con-prasekolah"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 4: TAHUN 1 -->
-<section id="page-t1" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 1</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t1">—</span></div>
-  </div>
-  <div id="con-t1"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 5: TAHUN 2 -->
-<section id="page-t2" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 2</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t2">—</span></div>
-  </div>
-  <div id="con-t2"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 6: TAHUN 3 -->
-<section id="page-t3" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 3</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t3">—</span></div>
-  </div>
-  <div id="con-t3"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 7: TAHUN 4 -->
-<section id="page-t4" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 4</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t4">—</span></div>
-  </div>
-  <div id="con-t4"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 8: TAHUN 5 -->
-<section id="page-t5" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 5</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t5">—</span></div>
-  </div>
-  <div id="con-t5"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 9: TAHUN 6 -->
-<section id="page-t6" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 6</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t6">—</span></div>
-  </div>
-  <div id="con-t6"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 10: TERBUKA -->
-<section id="page-terbuka" class="page">
-  <div class="ph">
-    <div class="ph-title">Terbuka</div>
-    <div class="ph-sub">Tarik Tali — Lelaki &amp; Perempuan</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-terbuka">—</span></div>
-  </div>
-  <div id="con-terbuka"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 11: PERBARISAN -->
-<section id="page-perbarisan" class="page">
-  <div class="ph">
-    <div class="ph-title">Perbarisan Kontinjen</div>
-    <div class="ph-sub">Senarai peserta perbarisan setiap rumah sukan</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-perbarisan">—</span></div>
-  </div>
-  <div id="con-perbarisan"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- SETUP OVERLAY -->
-<div id="setup-ov">
-  <div id="setup-box">
-    <h2>Tetapan URL Google Sheets</h2>
-    <p>Untuk setiap tab, ikut langkah berikut:</p>
-    <ol>
-      <li>Buka Google Sheet anda</li>
-      <li>Klik tab yang berkenaan (contoh: tab "Markah")</li>
-      <li>Pergi ke <strong>Fail → Kongsi → Terbitkan ke web</strong></li>
-      <li>Dropdown 1: pilih nama tab tersebut. Dropdown 2: pilih <strong>CSV</strong></li>
-      <li>Klik <strong>Terbitkan</strong> dan salin URL</li>
-      <li>Ulangi untuk setiap tab dan tampal di bawah</li>
-    </ol>
-    <div id="url-fields"></div>
-    <div class="sa">
-      <button class="btn-save" onclick="saveURLs()">Simpan &amp; Muatkan</button>
-      <button class="btn-cls" onclick="closeSetup()">Tutup</button>
-    </div>
-  </div>
-</div>
+<div id="board" class="grid"></div>
 
 <script>
-const PROXY = 'https://api.allorigins.win/raw?url=';
-const REFRESH_MS = 30000;
+const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=155371699&single=true&output=csv";
 
-const HOUSES = [
-  {key:'merah', label:'Merah', color:'#e8453c'},
-  {key:'hijau', label:'Hijau', color:'#2ecc71'},
-  {key:'biru',  label:'Biru',  color:'#3c82e8'},
-  {key:'kuning',label:'Kuning',color:'#f5c842'},
-];
+let lastData = [];
 
-const HMAP = {MERAH:'#e8453c',HIJAU:'#2ecc71',BIRU:'#3c82e8',KUNING:'#f5c842'};
-const hc = k => HMAP[(k||'').toUpperCase()] || '#888';
+async function load(){
+  const res = await fetch(URL);
+  const text = await res.text();
 
-const PAGES = [
-  {id:'medal',      label:'Kedudukan Medal',       type:'markah',    sk:'hs_url_markah'},
-  {id:'ppki',       label:'PPKI',                  type:'sukaneka',  sk:'hs_url_ppki'},
-  {id:'prasekolah', label:'Pra Sekolah',            type:'sukaneka',  sk:'hs_url_prasekolah'},
-  {id:'t1',         label:'Tahun 1',               type:'sukaneka',  sk:'hs_url_t1'},
-  {id:'t2',         label:'Tahun 2',               type:'sukaneka',  sk:'hs_url_t2'},
-  {id:'t3',         label:'Tahun 3',               type:'sukaneka',  sk:'hs_url_t3'},
-  {id:'t4',         label:'Tahun 4',               type:'olahraga',  sk:'hs_url_t4'},
-  {id:'t5',         label:'Tahun 5',               type:'olahraga',  sk:'hs_url_t5'},
-  {id:'t6',         label:'Tahun 6',               type:'olahraga',  sk:'hs_url_t6'},
-  {id:'terbuka',    label:'Terbuka (Tarik Tali)',   type:'tariktali', sk:'hs_url_terbuka'},
-  {id:'perbarisan', label:'Perbarisan Kontinjen',   type:'perbarisan',sk:'hs_url_perbarisan'},
-];
+  const rows = text.split("\n").map(r=>r.split(","));
 
-let curPage = 'medal';
-let timer = null;
-let evOpen = {};
+  let data = [];
 
-/* ── CSV PARSER ── */
-function csv(text){
-  const rows=[];
-  for(const line of text.trim().split(/\r?\n/)){
-    const cols=[];let cur='',inQ=false;
-    for(let i=0;i<line.length;i++){
-      const c=line[i];
-      if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cols.push(cur.trim());cur='';}else cur+=c;
-    }
-    cols.push(cur.trim());rows.push(cols);
-  }
-  return rows;
-}
-
-/* ── PARSERS ── */
-
-/* Markah: read G2:K5 (row idx 1-4, col idx 6-10) */
-function parseMarkah(rows){
-  const res=[];
   for(let i=1;i<=4;i++){
-    const r=rows[i]; if(!r) continue;
-    const nm=(r[6]||'').trim(); if(!nm) continue;
-    res.push({rumah:nm,emas:+r[7]||0,perak:+r[8]||0,gangsa:+r[9]||0,ke4:+r[10]||0});
+    if(!rows[i]) continue;
+    data.push({
+      rumah: rows[i][6],
+      mata: parseInt(rows[i][7])||0
+    });
   }
-  return res;
+
+  // sort ranking
+  data.sort((a,b)=>b.mata-a.mata);
+
+  render(data);
 }
 
-/* Sukaneka: multiple acara stacked. Each block: house headers → participant rows → KEDUDUKAN row */
-function parseSukaneka(rows){
-  const acara=[];
-  let i=0;
-  while(i<rows.length){
-    const r=rows[i];
-    const ju=r.join('|').toUpperCase();
-    if(ju.includes('MERAH')&&ju.includes('HIJAU')&&ju.includes('BIRU')&&ju.includes('KUNING')){
-      /* find event title above */
-      let title='Acara '+(acara.length+1);
-      for(let j=i-1;j>=Math.max(0,i-5);j--){
-        const cand=rows[j].join('').trim();
-        if(cand){title=cand;break;}
-      }
-      /* find column positions */
-      const hdr=r.map(c=>c.toUpperCase().trim());
-      const cM=hdr.indexOf('MERAH'),cH=hdr.indexOf('HIJAU'),cB=hdr.indexOf('BIRU'),cK=hdr.indexOf('KUNING');
-      const col=(h)=>h>=0?h:(h===-1?1:h);
-      i++;
-      if(rows[i]&&rows[i].join('').toUpperCase().includes('NAMA'))i++;
-      const pts={merah:[],hijau:[],biru:[],kuning:[]};
-      let ked={merah:'',hijau:'',biru:'',kuning:''};
-      while(i<rows.length){
-        const row=rows[i];
-        const a0=(row[0]||'').trim().toUpperCase();
-        const jr=row.join('|').toUpperCase();
-        if(a0==='KEDUDUKAN'){
-          ked={merah:(row[cM]||'').trim(),hijau:(row[cH]||'').trim(),biru:(row[cB]||'').trim(),kuning:(row[cK]||'').trim()};
-          i++;break;
-        }
-        if(jr.includes('MERAH')&&jr.includes('HIJAU')&&jr.includes('BIRU')&&jr.includes('KUNING'))break;
-        const num=parseInt(row[0]);
-        if(!isNaN(num)&&num>0){
-          pts.merah.push({num,name:(cM>=0?row[cM]:row[1])||''});
-          pts.hijau.push({num,name:(cH>=0?row[cH]:row[2])||''});
-          pts.biru.push ({num,name:(cB>=0?row[cB]:row[3])||''});
-          pts.kuning.push({num,name:(cK>=0?row[cK]:row[4])||''});
-        }
-        i++;
-      }
-      acara.push({title,pts,ked});
-    }else{i++;}
-  }
-  return acara;
-}
+function render(data){
+  const board = document.getElementById("board");
 
-/* Olahraga (T4-T6): events with Saringan 1, Saringan 2, Akhir */
-function parseOlahraga(rows){
-  const evs=[];
-  let i=0;
-  while(i<rows.length){
-    const r=rows[i];
-    const b=(r[1]||'').trim();
-    const bU=b.toUpperCase();
-    /* event title detection: non-empty col B, looks like an event */
-    const isEvTitle=b&&!bU.match(/^\d+$/)&&!bU.includes('NAMA')&&!bU.includes('SARINGAN')&&!bU.includes('AKHIR')&&!bU.includes('MERAH')&&!bU.includes('KEDUDUKAN')&&!bU.includes('RUMAH')&&b.length>2;
-    if(isEvTitle){
-      const ev={title:b,s1:[],s2:[],akhir:[]};
-      i++;
-      let phase=null;
-      while(i<rows.length){
-        const row=rows[i];
-        const r1=(row[1]||'').trim().toUpperCase();
-        const r0=(row[0]||'').trim().toUpperCase();
-        if(r1.includes('SARINGAN 1')||(r1.includes('SARINGAN')&&r1.includes('1'))){phase='s1';i++;continue;}
-        if(r1.includes('SARINGAN 2')||(r1.includes('SARINGAN')&&r1.includes('2'))){phase='s2';i++;continue;}
-        if(r1==='AKHIR'){phase='akhir';i++;continue;}
-        if(r1.includes('NAMA')||r0.includes('NAMA')){i++;continue;}
-        /* stop if next event */
-        const rb=(row[1]||'').trim();
-        const rbU=rb.toUpperCase();
-        if(rb&&!rbU.match(/^\d+$/)&&!rbU.includes('NAMA')&&!rbU.includes('SARINGAN')&&!rbU.includes('AKHIR')&&!rbU.includes('MERAH')&&!rbU.includes('KEDUDUKAN')&&!rbU.includes('RUMAH')&&rb.length>2&&row[0]===''){
-          break;
-        }
-        const num=parseInt(row[1]);
-        if(!isNaN(num)&&num>0&&phase){
-          ev[phase].push({num,name:(row[2]||'').trim(),ked:(row[3]||'').trim(),rumah:(row[4]||'').trim()});
-        }
-        i++;
-      }
-      if(ev.s1.length||ev.s2.length||ev.akhir.length)evs.push(ev);
-    }else{i++;}
-  }
-  return evs;
-}
+  board.innerHTML = data.map((d,i)=>{
+    const prev = lastData.find(x=>x.rumah===d.rumah);
 
-/* Tarik Tali: two events (L+P), each with 4 house sections */
-function parseTarikTali(rows){
-  const evs=[];
-  let curEv=null,curH=null;
-  for(let i=0;i<rows.length;i++){
-    const r=rows[i];
-    const a0=(r[0]||'').trim().toUpperCase();
-    const b0=(r[1]||'').trim().toUpperCase();
-    const ju=r.join('|').toUpperCase();
-    if(ju.includes('TARIK TALI')&&!['MERAH','HIJAU','BIRU','KUNING'].includes(a0)){
-      if(curEv)evs.push(curEv);
-      curEv={title:(r[1]||r[0]||'').trim(),houses:{merah:{p:[],ked:''},hijau:{p:[],ked:''},biru:{p:[],ked:''},kuning:{p:[],ked:''}}};
-      curH=null;continue;
+    let updated = "";
+    if(prev && prev.mata !== d.mata){
+      updated = "updated";
     }
-    const houseKey={'MERAH':'merah','HIJAU':'hijau','BIRU':'biru','KUNING':'kuning'};
-    if(houseKey[b0]||houseKey[a0]){
-      curH=houseKey[b0]||houseKey[a0];
-      const nx=rows[i+1];if(nx&&nx.join('').toUpperCase().includes('NAMA'))i++;
-      continue;
-    }
-    if(a0==='KEDUDUKAN'&&curEv&&curH){
-      curEv.houses[curH].ked=(r[1]||'').trim();curH=null;continue;
-    }
-    const num=parseInt(r[0]);
-    if(!isNaN(num)&&num>0&&curEv&&curH){
-      curEv.houses[curH].p.push({num,name:(r[1]||'').trim()});
-    }
-  }
-  if(curEv)evs.push(curEv);
-  return evs;
-}
 
-/* Perbarisan: roles + participants (1-20) + markah */
-function parsePerbarisan(rows){
-  const data={roles:[],members:[],markah:{merah:'',hijau:'',biru:'',kuning:''}};
-  const ROLES=['PEMEGANG SEPANDUK','PEMEGANG BENDERA','MASKOT'];
-  for(let i=0;i<rows.length;i++){
-    const r=rows[i];
-    const a=(r[0]||'').trim();
-    const aU=a.toUpperCase();
-    if(!a||aU==='PERBARISAN'||aU==='AHLI PERBARISAN')continue;
-    if(['MERAH','HIJAU','BIRU','KUNING'].some(h=>aU.includes(h)&&!r[1]))continue;
-    if(ROLES.some(role=>aU.includes(role.split(' ')[1]))||ROLES.includes(aU)){
-      data.roles.push({role:a,merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()});
-      continue;
-    }
-    if(aU==='MARKAH'){
-      data.markah={merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()};
-      continue;
-    }
-    const num=parseInt(a);
-    if(!isNaN(num)&&num>0){
-      data.members.push({num,merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()});
-    }
-  }
-  return data;
-}
-
-/* ── RENDERERS ── */
-
-function renderMedal(data){
-  if(!data.length)return noData();
-  const icons=['🥇','🥈','🥉','4'];
-  return `<div class="medal-grid">`+data.map((h,i)=>`
-    <div class="medal-card" style="--hc:${hc(h.rumah)}">
-      <div class="mc-rank">${i+1}</div>
-      <div class="mc-house">${h.rumah}</div>
-      <div class="mc-counts">
-        <div class="mc-item"><div class="mc-num c-gold">${h.emas}</div><div class="mc-lbl">Emas</div></div>
-        <div class="mc-item"><div class="mc-num c-silver">${h.perak}</div><div class="mc-lbl">Perak</div></div>
-        <div class="mc-item"><div class="mc-num c-bronze">${h.gangsa}</div><div class="mc-lbl">Gangsa</div></div>
-        <div class="mc-item"><div class="mc-num c-fourth">${h.ke4}</div><div class="mc-lbl">Ke-4</div></div>
-      </div>
-    </div>`).join('')+`</div>`;
-}
-
-function renderSukaneka(acara){
-  if(!acara.length)return noData();
-  return acara.map(a=>`
-    <div class="acara-block">
-      <div class="acara-name">${a.title}</div>
-      <div class="house-cols">
-        ${HOUSES.map(h=>{
-          const pts=a.pts[h.key]||[];
-          const filled=pts.filter(p=>p.name);
-          const ked=a.ked[h.key]||'—';
-          return `
-          <div class="hcol">
-            <div class="hcol-head" style="background:${h.color}22;color:${h.color}">${h.label}</div>
-            <div class="hcol-body">
-              ${filled.length?filled.map(p=>`
-                <div class="prow"><span class="pnum">${p.num}</span><span class="pname">${p.name}</span></div>`).join('')
-                :`<div class="pempty">Tiada peserta</div>`}
-            </div>
-            <div class="ked-row">
-              <span class="ked-val" style="color:${h.color}">${ked}</span>
-              <span class="ked-lbl">Tempat</span>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-}
-
-function renderOlahraga(evs){
-  if(!evs.length)return noData();
-  return evs.map((ev,idx)=>{
-    const uid='ev_'+idx;
-    const open=evOpen[uid]||false;
     return `
-    <div class="ev-card">
-      <div class="ev-head" onclick="toggleEv('${uid}')">
-        <span class="ev-name">${ev.title}</span>
-        <span class="ev-tog" id="${uid}_tog">${open?'&#9650; Tutup':'&#9660; Lihat peserta'}</span>
+      <div class="card ${i==0?'rank1':''} ${updated}">
+        <div class="rank">${i+1}</div>
+        <div class="house">${d.rumah}</div>
+        <div class="points">${d.mata}</div>
       </div>
-      <div id="${uid}" style="display:${open?'block':'none'}">
-        <div class="ev-body">
-          ${renderPhase('Saringan 1',ev.s1)}
-          ${renderPhase('Saringan 2',ev.s2)}
-          ${renderPhase('Akhir',ev.akhir)}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+    `;
+  }).join("");
+
+  lastData = data;
 }
 
-function renderPhase(lbl,data){
-  if(!data||!data.length)return'';
-  return `<div class="phase-lbl">${lbl}</div>
-    <table class="ptable">
-      <thead><tr><th>#</th><th>Nama Peserta</th><th>Kedudukan</th><th>Rumah Sukan</th></tr></thead>
-      <tbody>${data.map(p=>`
-        <tr>
-          <td style="color:var(--muted)">${p.num}</td>
-          <td>${p.name||'—'}</td>
-          <td>${p.ked||'—'}</td>
-          <td><span class="hbadge" style="background:${hc(p.rumah)}22;color:${hc(p.rumah)}">${p.rumah||'—'}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
+// auto refresh
+setInterval(load,5000);
 
-function renderTarikTali(evs){
-  if(!evs.length)return noData();
-  return evs.map(ev=>`
-    <div class="stitle"><span class="stitle-ac">//</span> ${ev.title}</div>
-    <div class="tt-wrap">
-      ${HOUSES.map(h=>{
-        const hd=ev.houses[h.key]||{p:[],ked:''};
-        return `
-        <div class="ttcol">
-          <div class="ttcol-head" style="background:${h.color}22;color:${h.color}">${h.label}</div>
-          <div class="ttcol-body">
-            ${hd.p.filter(p=>p.name).map(p=>`
-              <div class="ttrow"><span class="ttn">${p.num}</span><span>${p.name}</span></div>`).join('')
-              ||'<div class="ttrow" style="color:var(--muted)">Tiada peserta</div>'}
-          </div>
-          <div class="ttfoot">Tempat: <strong style="color:${h.color}">${hd.ked||'—'}</strong></div>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
-}
-
-function renderPerbarisan(data){
-  const hasData=data.roles.length||data.members.length;
-  if(!hasData)return noData();
-  const thead=`<tr><th style="width:160px">Peranan / Bil</th>${HOUSES.map(h=>`<th style="color:${h.color}">${h.label}</th>`).join('')}</tr>`;
-  const roleRows=data.roles.map(r=>`<tr><td>${r.role}</td><td>${r.merah||'—'}</td><td>${r.hijau||'—'}</td><td>${r.biru||'—'}</td><td>${r.kuning||'—'}</td></tr>`).join('');
-  const memberRows=data.members.map(m=>`<tr><td>${m.num}</td><td>${m.merah||'—'}</td><td>${m.hijau||'—'}</td><td>${m.biru||'—'}</td><td>${m.kuning||'—'}</td></tr>`).join('');
-  const markahRow=`<tr class="pb-markah"><td>MARKAH</td><td>${data.markah.merah||'—'}</td><td>${data.markah.hijau||'—'}</td><td>${data.markah.biru||'—'}</td><td>${data.markah.kuning||'—'}</td></tr>`;
-  return `
-    ${data.roles.length?`
-    <div class="pb-section">
-      <div class="pb-sec-hd">Pemegang Bendera, Sepanduk &amp; Maskot</div>
-      <table class="pb-table"><thead>${thead}</thead><tbody>${roleRows}</tbody></table>
-    </div>`:''}
-    <div class="pb-section">
-      <div class="pb-sec-hd">Ahli Perbarisan</div>
-      <table class="pb-table"><thead>${thead}</thead><tbody>${memberRows}${markahRow}</tbody></table>
-    </div>`;
-}
-
-function noData(){return`<div class="loading">Tiada data dijumpai. Pastikan URL betul dan sheet telah diterbitkan.</div>`;}
-
-/* ── FETCH & LOAD ── */
-async function loadPage(id){
-  const pg=PAGES.find(p=>p.id===id); if(!pg)return;
-  const url=localStorage.getItem(pg.sk);
-  const con=document.getElementById('con-'+id);
-  const ts=document.getElementById('ts-'+id);
-  if(!url){
-    con.innerHTML=`<div class="no-url">URL untuk halaman ini belum ditetapkan.<br>Klik butang <strong>&#9881; URL</strong> di atas navigasi untuk masukkan URL CSV tab <strong>${pg.label}</strong>.</div>`;
-    return;
-  }
-  try{
-    const res=await fetch(PROXY+encodeURIComponent(url),{cache:'no-store'});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const rows=csv(await res.text());
-    let html='';
-    if(pg.type==='markah')    html=renderMedal(parseMarkah(rows));
-    else if(pg.type==='sukaneka')  html=renderSukaneka(parseSukaneka(rows));
-    else if(pg.type==='olahraga')  html=renderOlahraga(parseOlahraga(rows));
-    else if(pg.type==='tariktali') html=renderTarikTali(parseTarikTali(rows));
-    else if(pg.type==='perbarisan')html=renderPerbarisan(parsePerbarisan(rows));
-    con.innerHTML=html;
-    if(ts)ts.textContent='Kemaskini: '+new Date().toLocaleTimeString('ms-MY');
-  }catch(e){
-    con.innerHTML=`<div class="loading">Gagal memuatkan: ${e.message}<br><small style="color:var(--muted)">Semak URL dan pastikan sheet telah diterbitkan sebagai CSV.</small></div>`;
-  }
-}
-
-/* ── NAVIGATION ── */
-function go(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-  curPage=id;
-  clearInterval(timer);
-  loadPage(id);
-  timer=setInterval(()=>loadPage(id),REFRESH_MS);
-}
-
-function toggleEv(uid){
-  const el=document.getElementById(uid);
-  const tog=document.getElementById(uid+'_tog');
-  if(!el)return;
-  const isOpen=el.style.display!=='none';
-  el.style.display=isOpen?'none':'block';
-  evOpen[uid]=!isOpen;
-  if(tog)tog.innerHTML=isOpen?'&#9660; Lihat peserta':'&#9650; Tutup';
-}
-
-/* ── SETUP ── */
-function openSetup(){
-  document.getElementById('url-fields').innerHTML=PAGES.map(p=>`
-    <div class="url-row">
-      <div class="url-lbl">${p.label}</div>
-      <input class="url-inp" type="text" id="ui-${p.id}" value="${localStorage.getItem(p.sk)||''}" placeholder="https://docs.google.com/spreadsheets/d/…/pub?gid=…&output=csv"/>
-    </div>`).join('');
-  document.getElementById('setup-ov').classList.add('open');
-}
-function closeSetup(){document.getElementById('setup-ov').classList.remove('open');}
-function saveURLs(){
-  PAGES.forEach(p=>{
-    const v=(document.getElementById('ui-'+p.id)||{}).value||'';
-    if(v.trim())localStorage.setItem(p.sk,v.trim());
-    else localStorage.removeItem(p.sk);
-  });
-  closeSetup();
-  go(curPage,null);
-}
-
-/* ── INIT ── */
-window.addEventListener('DOMContentLoaded',()=>{
-  go('medal',document.querySelector('.nav-btn.active'));
-});
+load();
 </script>
+
 </body>
 </html>
