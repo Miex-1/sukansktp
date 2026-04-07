@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SKTP Sports Day</title>
+<title>SKTP SPORTS DAY</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -331,25 +331,14 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 
 <script>
 const REFRESH_MS = 30000;
+const APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw_JVzZ-CtejwCCJOAsy6ac-qz8HwkzQVqxW2CxRh-Q3ZaUemauSaQ05YQlvKqcjy9o/exec';
+const SHEET_ID    = '1BOHJxJSQXr0_dMpZtsl44KsYIDlsu_YlbY_Wk5fdPCA';
 
-/* Cuba proxy satu persatu — jika gagal, cuba yang seterusnya */
-const PROXIES = [
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-];
-
-async function fetchCSV(url) {
-  for (const proxy of PROXIES) {
-    try {
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), 8000);
-      const res = await fetch(proxy(url), { cache: 'no-store', signal: controller.signal });
-      clearTimeout(t);
-      if (res.ok) return await res.text();
-    } catch(e) { continue; }
-  }
-  throw new Error('Semua proxy gagal. Semak sambungan internet anda.');
+async function fetchCSV(gid) {
+  const url = `${APPS_SCRIPT}?id=${SHEET_ID}&gid=${gid}`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return await res.text();
 }
 
 const HOUSES = [
@@ -363,17 +352,17 @@ const HMAP = {MERAH:'#e8453c',HIJAU:'#2ecc71',BIRU:'#3c82e8',KUNING:'#f5c842'};
 const hc = k => HMAP[(k||'').toUpperCase()] || '#888';
 
 const PAGES = [
-  {id:'medal',      label:'Kedudukan Medal',      type:'markah',    url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=155371699&single=true&output=csv'},
-  {id:'ppki',       label:'PPKI',                 type:'sukaneka',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=258085683&single=true&output=csv'},
-  {id:'prasekolah', label:'Pra Sekolah',           type:'sukaneka',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=1472093462&single=true&output=csv'},
-  {id:'t1',         label:'Tahun 1',              type:'sukaneka',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=49708938&single=true&output=csv'},
-  {id:'t2',         label:'Tahun 2',              type:'sukaneka',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=2043442714&single=true&output=csv'},
-  {id:'t3',         label:'Tahun 3',              type:'sukaneka',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=234073445&single=true&output=csv'},
-  {id:'t4',         label:'Tahun 4',              type:'olahraga',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=0&single=true&output=csv'},
-  {id:'t5',         label:'Tahun 5',              type:'olahraga',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=898276486&single=true&output=csv'},
-  {id:'t6',         label:'Tahun 6',              type:'olahraga',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=568699660&single=true&output=csv'},
-  {id:'terbuka',    label:'Terbuka (Tarik Tali)', type:'tariktali', url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=776734765&single=true&output=csv'},
-  {id:'perbarisan', label:'Perbarisan Kontinjen', type:'perbarisan',url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99NjQB1NJ4DcwMQsPQ4zNFB-Zh-G5_9u7dAr1ulGvicRXi8oWId_SCJJ77XgdZWWlUX9JVQeVtDm9/pub?gid=59197173&single=true&output=csv'},
+  {id:'medal',      label:'Kedudukan Medal',      type:'markah',    gid:155371699},
+  {id:'ppki',       label:'PPKI',                 type:'sukaneka',  gid:258085683},
+  {id:'prasekolah', label:'Pra Sekolah',           type:'sukaneka',  gid:1472093462},
+  {id:'t1',         label:'Tahun 1',              type:'sukaneka',  gid:49708938},
+  {id:'t2',         label:'Tahun 2',              type:'sukaneka',  gid:2043442714},
+  {id:'t3',         label:'Tahun 3',              type:'sukaneka',  gid:234073445},
+  {id:'t4',         label:'Tahun 4',              type:'olahraga',  gid:0},
+  {id:'t5',         label:'Tahun 5',              type:'olahraga',  gid:898276486},
+  {id:'t6',         label:'Tahun 6',              type:'olahraga',  gid:568699660},
+  {id:'terbuka',    label:'Terbuka (Tarik Tali)', type:'tariktali', gid:776734765},
+  {id:'perbarisan', label:'Perbarisan Kontinjen', type:'perbarisan',gid:59197173},
 ];
 
 let curPage = 'medal';
@@ -683,7 +672,7 @@ async function loadPage(id){
   const con=document.getElementById('con-'+id);
   const ts=document.getElementById('ts-'+id);
   try{
-    const rows=csv(await fetchCSV(pg.url));
+    const rows=csv(await fetchCSV(pg.gid));
     let html='';
     if(pg.type==='markah')     html=renderMedal(parseMarkah(rows));
     else if(pg.type==='sukaneka')   html=renderSukaneka(parseSukaneka(rows));
