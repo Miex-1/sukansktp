@@ -4,373 +4,540 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SKTP SPORTS DAY</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#080810;--surface:#10101c;--card:#16162a;--border:rgba(255,255,255,.07);
-  --text:#eeeef8;--muted:#6868a0;
+  /* Warna baju SKTPC */
+  --lime:       #7EC820;
+  --lime-d:     #4a8010;
+  --lime-l:     #b8e870;
+  --lime-bg:    #f0fae0;
+  --fuschia:    #F0306A;
+  --fuschia-d:  #b81548;
+  --fuschia-l:  #ff80a8;
+  --peach:      #E8C060;
+  --cream:      #fdfaf4;
+  --ink:        #1a200e;
+  --ink-m:      #3d4a28;
+  --ink-l:      #7a8860;
+  --border:     rgba(126,200,32,.2);
+  --card:       #ffffff;
+
+  /* Alias supaya kod lama masih berfungsi */
+  --matcha:     #7EC820;
+  --matcha-d:   #4a8010;
+  --matcha-l:   #b8e870;
+  --matcha-bg:  #f0fae0;
+  --berry:      #F0306A;
+  --berry-d:    #b81548;
+  --berry-l:    #ff80a8;
+
   --merah:#e8453c;--hijau:#2ecc71;--biru:#3c82e8;--kuning:#f5c842;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;background-image:linear-gradient(160deg,#edfad0 0%,#fff8e8 50%,#fde8f0 100%);background-attachment:fixed}
 
-/* ── SCHOOL HEADER ── */
-#school-header{
-  background:rgba(8,8,16,.98);
-  border-bottom:1px solid var(--border);
-  padding:1.25rem 1.5rem 1rem;
-  text-align:center;
-  position:relative;z-index:101;
-}
-#school-header-inner{
-  display:flex;align-items:center;justify-content:center;gap:1.25rem;
-  max-width:900px;margin:0 auto;
-}
-#logo-placeholder{
-  flex-shrink:0;text-align:center;
-}
-#logo-label{
-  font-size:9px;color:var(--muted);letter-spacing:.12em;
-  text-transform:uppercase;margin-top:3px;
-}
-#school-info{text-align:left;}
-#school-event{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1rem,3vw,1.6rem);
-  letter-spacing:.08em;color:var(--kuning);
-  line-height:1.1;
-}
-#school-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.3rem,4.5vw,2.4rem);
-  letter-spacing:.05em;color:var(--text);
-  line-height:1.1;margin-top:2px;
-}
-#school-year{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1rem,3vw,1.5rem);
-  letter-spacing:.2em;color:var(--muted);
-  margin-top:2px;
-}
+/* ── BACKGROUND PATTERN ── */
+body::before{content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(74,124,72,.1) 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none;z-index:0}
+
+/* ── HEADER ── */
+#header{position:relative;z-index:10;background:linear-gradient(135deg,#2d5a08 0%,#4a3010 40%,#8a1040 100%);padding:1.25rem 1.5rem 1rem;border-bottom:3px solid var(--fuschia)}
+#header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1.25rem}
+#logo-wrap{flex-shrink:0}
+#logo-wrap img{width:72px;height:72px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+#school-info{flex:1}
+#ev-label{font-size:clamp(1rem,3vw,1.5rem);letter-spacing:.05em;text-transform:uppercase;color:#fff;font-family:"Playfair Display",serif;font-weight:700;margin-bottom:3px}
+#ev-name{font-family:'DM Sans',sans-serif;font-size:clamp(.75rem,1.8vw,.95rem);font-weight:500;color:var(--matcha-l);line-height:1.2;margin-top:2px}
+#school-name{font-size:clamp(.8rem,2vw,1rem);color:var(--matcha-l);margin-top:3px;font-weight:500}
+#ev-year{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,5vw,2.8rem);font-weight:700;color:var(--peach);flex-shrink:0;line-height:1}
 @media(max-width:480px){
-  #school-header-inner{flex-direction:column;gap:.75rem;text-align:center}
-  #school-info{text-align:center}
+  #header-inner{flex-wrap:wrap}
+  #ev-year{margin-left:auto}
 }
+
+/* ── LIVE BADGE ── */
+#live-bar{background:linear-gradient(90deg,#4a8010,#7EC820,#E8C060,#F0306A,#E8C060,#7EC820,#4a8010);padding:7px 1.5rem;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;z-index:10;border-bottom:2px solid var(--berry)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--berry-l);animation:blink 1.3s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#live-bar span{font-size:11px;color:rgba(255,255,255,.85);letter-spacing:.1em;text-transform:uppercase}
+#live-ts{font-size:11px;color:rgba(255,255,255,.55);margin-left:auto}
 
 /* ── NAV ── */
-#nav{position:sticky;top:0;z-index:100;background:rgba(8,8,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none}
+#nav{background:#fff;border-bottom:3px solid var(--matcha-bg);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 12px rgba(45,79,43,.08)}
 #nav::-webkit-scrollbar{display:none}
-.nav-inner{display:flex;align-items:center;gap:0;margin:0 auto;padding:0 1rem}
-.nav-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:14px 11px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;font-family:'Plus Jakarta Sans',sans-serif}
-.nav-btn:hover{color:var(--text)}
-.nav-btn.active{color:var(--kuning);border-bottom-color:var(--kuning)}
-.nav-setup{margin-left:auto;flex-shrink:0;background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;white-space:nowrap}
-.nav-setup:hover{background:rgba(255,255,255,.05)}
+.nav-inner{display:flex;align-items:stretch;min-width:max-content;margin:0 auto;padding:0 1rem}
+.nav-btn{background:transparent;border:none;border-bottom:3px solid transparent;color:var(--ink-m);padding:13px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;font-family:'DM Sans',sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.nav-btn:hover{color:var(--matcha)}
+.nav-btn.active{color:var(--lime-d);border-bottom-color:var(--fuschia);background:linear-gradient(to bottom,transparent,rgba(240,48,106,.06))}
 
 /* ── PAGES ── */
-.page{display:none;position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.page{display:none;position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:1.75rem 1rem 4rem}
 .page.active{display:block}
 
 /* ── PAGE HEADER ── */
-.ph{margin-bottom:1.5rem}
-.ph-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.05em}
-.ph-sub{font-size:13px;color:var(--muted);margin-top:2px}
-.ph-ts{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-top:6px}
-.rdot{width:5px;height:5px;border-radius:50%;background:#2ecc71;animation:blink 2s infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ph{margin-bottom:1.5rem;display:flex;align-items:flex-start;gap:10px}
+.ph-accent{width:5px;border-radius:3px;background:linear-gradient(to bottom,var(--fuschia),var(--peach),var(--lime));min-height:42px;flex-shrink:0;margin-top:3px}
+.ph-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--ink);line-height:1.1}
+.ph-sub{font-size:12px;color:var(--ink-l);margin-top:3px}
+.ph-ts{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-l);margin-top:5px}
+.rdot{width:5px;height:5px;border-radius:50%;background:var(--matcha);animation:blink 2s infinite;flex-shrink:0}
 
-/* ── SETUP OVERLAY ── */
-#setup-ov{display:none}
-#setup-ov.open{display:block}
-#setup-box{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:660px;margin:0 auto;padding:1.75rem}
-#setup-box h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--kuning);letter-spacing:.05em;margin-bottom:.3rem}
-#setup-box p{color:var(--muted);font-size:13px;margin-bottom:1.25rem;line-height:1.6}
-#setup-box ol{color:var(--muted);font-size:13px;padding-left:1.2rem;margin-bottom:1rem;line-height:1.8}
-.url-row{margin-bottom:10px}
-.url-lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:3px;letter-spacing:.06em;text-transform:uppercase}
-.url-inp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:9px;font-size:12px;outline:none;transition:border-color .2s;font-family:'Plus Jakarta Sans',sans-serif}
-.url-inp:focus{border-color:var(--kuning)}
-.sa{display:flex;gap:8px;margin-top:1.25rem}
-.btn-save{background:var(--kuning);color:#080810;border:none;padding:9px 20px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer;transition:opacity .15s}
-.btn-save:hover{opacity:.85}
-.btn-cls{background:transparent;color:var(--muted);border:1px solid var(--border);padding:9px 20px;border-radius:9px;font-size:13px;cursor:pointer}
-.btn-cls:hover{background:rgba(255,255,255,.05)}
-
-/* ── MEDAL ── */
-.medal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.medal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;position:relative;overflow:hidden;transition:transform .2s}
-.medal-card:hover{transform:translateY(-2px)}
-.medal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--hc)}
-.mc-rank{font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;color:rgba(255,255,255,.04);position:absolute;right:1rem;top:0;pointer-events:none}
-.mc-house{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--hc);margin-bottom:6px}
-.mc-counts{display:flex;gap:14px;align-items:baseline}
-.mc-item{text-align:center}
-.mc-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:1}
-.mc-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
-.c-gold{color:#f5c842}.c-silver{color:#b8b8cc}.c-bronze{color:#c87941}.c-fourth{color:var(--muted)}
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-top:3px solid var(--lime);border-radius:14px;padding:1.25rem;box-shadow:0 2px 16px rgba(45,79,43,.07)}
 
 /* ── SECTION TITLE ── */
-.stitle{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.05em;margin:1.75rem 0 .75rem;display:flex;align-items:center;gap:6px}
-.stitle-ac{color:var(--kuning)}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--matcha-d);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+.sec-title::before{content:'';width:18px;height:3px;background:linear-gradient(to right,var(--berry),var(--berry-l));border-radius:2px;flex-shrink:0}
 
-/* ── SUKANEKA ── */
-.acara-block{margin-bottom:2rem}
-.acara-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--kuning);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.house-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.hcol{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.hcol-head{padding:8px 10px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.1em;text-transform:uppercase}
-.hcol-body{padding:4px 0;min-height:40px}
-.prow{display:flex;align-items:center;gap:7px;padding:5px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
-.prow:last-child{border-bottom:none}
-.pnum{font-size:10px;color:var(--muted);min-width:18px;flex-shrink:0}
-.pname{font-size:12px;color:var(--text);line-height:1.3}
-.pempty{font-size:11px;color:rgba(255,255,255,.15);font-style:italic;padding:6px 10px}
-.ked-row{padding:7px 10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:5px}
-.ked-val{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;line-height:1}
-.ked-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+/* ── TAB 1: KEDUDUKAN ── */
+.rank-table{width:100%;border-collapse:collapse;font-size:13px}
+.rank-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-l);border-bottom:2px solid var(--border)}
+.rank-table td{padding:10px 12px;border-bottom:1px solid rgba(92,138,90,.08);vertical-align:middle}
+.rank-table tr:last-child td{border-bottom:none}
+.rank-table tr:hover td{background:var(--matcha-bg);transition:background .12s}
+.rank-num{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink-l)}
+.rank-num.r1{color:var(--fuschia)}
+.house-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.house-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pts-big{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink)}
+.medal-gold{color:#d4a017;font-weight:700}
+.medal-silver{color:#888;font-weight:700}
+.medal-bronze{color:#a0522d;font-weight:700}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
 
-/* ── OLAHRAGA ── */
-.ev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-.ev-head{padding:10px 14px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.ev-head:hover{background:rgba(255,255,255,.04)}
-.ev-name{font-weight:600;font-size:14px}
-.ev-tog{font-size:11px;color:var(--muted)}
-.ev-body{padding:12px 14px}
-.phase-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:10px 0 5px}
-.phase-lbl:first-child{margin-top:0}
-.ptable{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px}
-.ptable th{text-align:left;padding:5px 8px;color:var(--muted);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
-.ptable td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-.ptable tr:last-child td{border-bottom:none}
-.hbadge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
+/* ── SUBTABS ── */
+.subtab-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.subtab{background:transparent;border:1.5px solid var(--border);color:var(--ink-m);padding:7px 16px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.subtab:hover{border-color:var(--matcha);color:var(--matcha)}
+.subtab.active{background:linear-gradient(135deg,var(--lime-d),var(--lime));color:#fff;border-color:var(--lime-d)}
 
-/* ── TARIK TALI ── */
-.tt-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:1.5rem}
-.ttcol{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.ttcol-head{padding:9px 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.ttcol-body{padding:4px 0}
-.ttrow{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
-.ttrow:last-child{border-bottom:none}
-.ttn{font-size:10px;color:var(--muted);min-width:18px;flex-shrink:0}
-.ttfoot{padding:7px 12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+/* ── HOUSE BUTTONS ── */
+.house-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.hbtn{padding:8px 18px;border-radius:99px;border:2px solid transparent;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;font-family:'DM Sans',sans-serif}
+.hbtn-merah{background:rgba(232,69,60,.1);color:var(--merah);border-color:rgba(232,69,60,.3)}
+.hbtn-hijau{background:rgba(46,204,113,.1);color:#1a8a4a;border-color:rgba(46,204,113,.3)}
+.hbtn-biru{background:rgba(60,130,232,.1);color:#1a5cb5;border-color:rgba(60,130,232,.3)}
+.hbtn-kuning{background:rgba(245,200,66,.1);color:#a07800;border-color:rgba(245,200,66,.3)}
+.hbtn.active.hbtn-merah{background:linear-gradient(135deg,#c0392b,var(--merah));color:#fff;border-color:var(--merah);box-shadow:0 2px 8px rgba(232,69,60,.35)}
+.hbtn.active.hbtn-hijau{background:linear-gradient(135deg,#1a8a4a,#2ecc71);color:#fff;border-color:#2ecc71;box-shadow:0 2px 8px rgba(46,204,113,.35)}
+.hbtn.active.hbtn-biru{background:linear-gradient(135deg,#1a5cb5,var(--biru));color:#fff;border-color:var(--biru);box-shadow:0 2px 8px rgba(60,130,232,.35)}
+.hbtn.active.hbtn-kuning{background:linear-gradient(135deg,#b38a00,#e6b800);color:#fff;border-color:#e6b800;box-shadow:0 2px 8px rgba(245,200,66,.35)}
 
-/* ── PERBARISAN ── */
-.pb-section{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
-.pb-sec-hd{padding:9px 14px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-.pb-table{width:100%;border-collapse:collapse;font-size:13px}
-.pb-table th{padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);text-align:left}
-.pb-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-.pb-table tr:last-child td{border-bottom:none}
-.pb-table td:first-child{color:var(--muted);font-size:12px}
-.pb-markah td{background:rgba(245,200,66,.05)}
-.pb-markah td:first-child{color:var(--kuning);font-weight:600}
+/* ── GROUP BUTTONS ── */
+.grp-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.grp-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);color:var(--ink-m);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.grp-btn:hover{border-color:var(--matcha);color:var(--matcha)}
+.grp-btn.active{background:linear-gradient(135deg,var(--lime-d),var(--lime));color:#fff;border-color:var(--lime-d)}
 
-/* ── LOADING ── */
-.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px;line-height:1.7}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--kuning);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+/* ── EVENT BUTTONS (14 acara) ── */
+.ev-btn-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.25rem}
+.ev-btn{padding:7px 13px;border-radius:8px;border:1.5px solid var(--border);color:var(--ink-m);background:var(--card);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.ev-btn:hover{border-color:var(--matcha);color:var(--matcha)}
+.ev-btn.active{background:linear-gradient(135deg,var(--fuschia-d),var(--fuschia));color:#fff;border-color:var(--fuschia)}
+
+/* ── NAME LIST ── */
+.name-list{list-style:none;padding:0}
+.name-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(92,138,90,.07)}
+.name-item:last-child{border-bottom:none}
+.name-num{font-size:11px;color:var(--ink-l);min-width:24px;flex-shrink:0}
+.name-text{font-size:13px;color:var(--ink);font-weight:500}
+.empty-state{text-align:center;padding:2rem;color:var(--ink-l);font-size:13px}
+
+/* ── LIVE TABLE ── */
+.live-table{width:100%;border-collapse:collapse;font-size:13px}
+.live-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-l);border-bottom:2px solid var(--border)}
+.live-table td{padding:9px 12px;border-bottom:1px solid rgba(92,138,90,.08);vertical-align:middle}
+.live-table tr:last-child td{border-bottom:none}
+.live-table tr:hover td{background:var(--matcha-bg)}
+.ked-badge{display:inline-block;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:11px;font-weight:700}
+.ked-1{background:#d4a017;color:#fff}
+.ked-2{background:#888;color:#fff}
+.ked-3{background:#a0522d;color:#fff}
+.ked-x{background:var(--matcha-bg);color:var(--ink-l)}
+.house-tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+
+/* ── EMBED ── */
+.embed-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.embed-placeholder{padding:3rem;text-align:center;color:var(--ink-l)}
+.embed-placeholder .icon{font-size:48px;margin-bottom:1rem}
+.embed-placeholder p{font-size:13px;line-height:1.6}
+.embed-wrap iframe{width:100%;height:620px;border:none;display:block}
+
+/* ── LOADING / EMPTY ── */
+.loading{text-align:center;padding:3rem;color:var(--ink-l);font-size:13px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--matcha);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.no-url{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;font-size:13px;color:var(--muted);line-height:1.7}
-.no-url strong{color:var(--kuning)}
 
 /* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .house-cols{grid-template-columns:repeat(2,1fr)}
-  .medal-grid{grid-template-columns:repeat(2,1fr)}
-  .tt-wrap{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:400px){
-  .house-cols{grid-template-columns:1fr 1fr}
+@media(max-width:560px){
+  .ev-btn-grid{gap:5px}
+  .ev-btn{padding:6px 10px;font-size:10px}
+  .subtab{padding:6px 12px}
 }
 </style>
 </head>
 <body>
 
-<!-- SCHOOL HEADER -->
-<header id="school-header">
-  <div id="school-header-inner">
-    <div id="logo-placeholder">
-      <img src="lencana.png" alt="Lencana SK Taman Permata" width="80" height="80" style="object-fit:contain;display:block"/>
+<!-- HEADER -->
+<header id="header">
+  <div id="header-inner">
+    <div id="logo-wrap">
+      <img src="lencana.png" alt="Lencana SK Taman Permata"/>
     </div>
     <div id="school-info">
-      <div id="school-event">KEJOHANAN SUKAN MINI OLIMPIK</div>
-      <div id="school-name">SEKOLAH KEBANGSAAN TAMAN PERMATA</div>
-      <div id="school-year">2026</div>
+      <div id="ev-label">Kejohanan Sukan Tahunan</div>
+      <div id="ev-name">Sekolah Kebangsaan Taman Permata</div>
+      <div id="school-name">Gombak, Selangor</div>
     </div>
+    <div id="ev-year">2026</div>
   </div>
 </header>
+
+<!-- LIVE BAR -->
+<div id="live-bar">
+  <span class="live-dot"></span>
+  <span>Keputusan Langsung</span>
+  <span id="live-ts"></span>
+</div>
 
 <!-- NAVIGATION -->
 <nav id="nav">
   <div class="nav-inner">
-    <button class="nav-btn active" onclick="go('medal',this)">Kedudukan</button>
+    <button class="nav-btn active" onclick="go('kedudukan',this)">Kedudukan</button>
+    <button class="nav-btn" onclick="go('aturcara',this)">Aturcara</button>
+    <button class="nav-btn" onclick="go('perbarisan',this)">Perbarisan</button>
+    <button class="nav-btn" onclick="go('tariktali',this)">Tarik Tali</button>
     <button class="nav-btn" onclick="go('ppki',this)">PPKI</button>
     <button class="nav-btn" onclick="go('prasekolah',this)">Pra Sekolah</button>
-    <button class="nav-btn" onclick="go('t1',this)">Tahun 1</button>
-    <button class="nav-btn" onclick="go('t2',this)">Tahun 2</button>
-    <button class="nav-btn" onclick="go('t3',this)">Tahun 3</button>
-    <button class="nav-btn" onclick="go('t4',this)">Tahun 4</button>
-    <button class="nav-btn" onclick="go('t5',this)">Tahun 5</button>
-    <button class="nav-btn" onclick="go('t6',this)">Tahun 6</button>
-    <button class="nav-btn" onclick="go('terbuka',this)">Terbuka</button>
-    <button class="nav-btn" onclick="go('perbarisan',this)">Perbarisan</button>
+    <button class="nav-btn" onclick="go('tahap1',this)">Tahap 1</button>
+    <button class="nav-btn" onclick="go('tahap2',this)">Tahap 2</button>
   </div>
 </nav>
 
-<!-- PAGE 1: KEDUDUKAN MEDAL -->
-<section id="page-medal" class="page active">
-  <div class="ph">
-    <div class="ph-title">Kedudukan Medal</div>
-    <div class="ph-sub">Keputusan keseluruhan mengikut rumah sukan — auto sort</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-medal">—</span></div>
-  </div>
-  <div id="con-medal"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+<!-- ══════════════════════════════════════════
+     PAGE 1 — KEDUDUKAN SEMASA
+══════════════════════════════════════════ -->
+<section id="page-kedudukan" class="page active">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Kedudukan Semasa</div>
+    <div class="ph-sub">Dikemaskini secara langsung</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-kedudukan">—</span></div>
+  </div></div>
+  <div class="sec-title">Kedudukan Keseluruhan</div>
+  <div class="card" style="margin-bottom:1.5rem;overflow-x:auto" id="con-keseluruhan"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+
+  <div class="sec-title">Kedudukan Pingat</div>
+  <div class="card" id="con-pingat"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
 </section>
 
-<!-- PAGE 2: PPKI -->
-<section id="page-ppki" class="page">
-  <div class="ph">
-    <div class="ph-title">PPKI</div>
-    <div class="ph-sub">Program Pendidikan Khas Integrasi — 2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-ppki">—</span></div>
+<!-- ══════════════════════════════════════════
+     PAGE 2 — ATURCARA KEJOHANAN
+══════════════════════════════════════════ -->
+<section id="page-aturcara" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Aturcara Kejohanan</div>
+    <div class="ph-sub">Buku Program Rasmi 2026</div>
+  </div></div>
+  <div class="embed-wrap" id="flipbook-wrap">
+    <div class="embed-placeholder">
+      <div class="icon">📖</div>
+      <p>Buku program akan dipaparkan di sini.<br/>Sila tunggu pautan daripada urusetia.</p>
+    </div>
   </div>
-  <div id="con-ppki"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
 </section>
 
-<!-- PAGE 3: PRA SEKOLAH -->
-<section id="page-prasekolah" class="page">
-  <div class="ph">
-    <div class="ph-title">Pra Sekolah</div>
-    <div class="ph-sub">1 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-prasekolah">—</span></div>
-  </div>
-  <div id="con-prasekolah"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 4: TAHUN 1 -->
-<section id="page-t1" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 1</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t1">—</span></div>
-  </div>
-  <div id="con-t1"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 5: TAHUN 2 -->
-<section id="page-t2" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 2</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t2">—</span></div>
-  </div>
-  <div id="con-t2"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 6: TAHUN 3 -->
-<section id="page-t3" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 3</div>
-    <div class="ph-sub">2 acara</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t3">—</span></div>
-  </div>
-  <div id="con-t3"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 7: TAHUN 4 -->
-<section id="page-t4" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 4</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t4">—</span></div>
-  </div>
-  <div id="con-t4"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 8: TAHUN 5 -->
-<section id="page-t5" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 5</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t5">—</span></div>
-  </div>
-  <div id="con-t5"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 9: TAHUN 6 -->
-<section id="page-t6" class="page">
-  <div class="ph">
-    <div class="ph-title">Tahun 6</div>
-    <div class="ph-sub">14 acara olahraga — klik acara untuk lihat peserta</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-t6">—</span></div>
-  </div>
-  <div id="con-t6"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 10: TERBUKA -->
-<section id="page-terbuka" class="page">
-  <div class="ph">
-    <div class="ph-title">Terbuka</div>
-    <div class="ph-sub">Tarik Tali — Lelaki &amp; Perempuan</div>
-    <div class="ph-ts"><span class="rdot"></span><span id="ts-terbuka">—</span></div>
-  </div>
-  <div id="con-terbuka"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
-</section>
-
-<!-- PAGE 11: PERBARISAN -->
+<!-- ══════════════════════════════════════════
+     PAGE 3 — PERBARISAN KONTINJEN
+══════════════════════════════════════════ -->
 <section id="page-perbarisan" class="page">
-  <div class="ph">
+  <div class="ph"><div class="ph-accent"></div><div>
     <div class="ph-title">Perbarisan Kontinjen</div>
-    <div class="ph-sub">Senarai peserta perbarisan setiap rumah sukan</div>
+    <div class="ph-sub">Senarai peserta mengikut rumah sukan</div>
     <div class="ph-ts"><span class="rdot"></span><span id="ts-perbarisan">—</span></div>
+  </div></div>
+  <div class="house-btn-row">
+    <button class="hbtn hbtn-merah active" onclick="showHouse('perbarisan','merah',this)">Merah</button>
+    <button class="hbtn hbtn-hijau" onclick="showHouse('perbarisan','hijau',this)">Hijau</button>
+    <button class="hbtn hbtn-biru" onclick="showHouse('perbarisan','biru',this)">Biru</button>
+    <button class="hbtn hbtn-kuning" onclick="showHouse('perbarisan','kuning',this)">Kuning</button>
   </div>
-  <div id="con-perbarisan"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  <div class="card" id="con-perbarisan"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
 </section>
 
+<!-- ══════════════════════════════════════════
+     PAGE 4 — TARIK TALI
+══════════════════════════════════════════ -->
+<section id="page-tariktali" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Tarik Tali</div>
+    <div class="ph-sub">Lelaki &amp; Perempuan</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-tariktali">—</span></div>
+  </div></div>
+  <div class="subtab-bar">
+    <button class="subtab active" onclick="setSubtab('tariktali','lelaki',this)">Lelaki</button>
+    <button class="subtab" onclick="setSubtab('tariktali','perempuan',this)">Perempuan</button>
+  </div>
+  <div id="tariktali-lelaki">
+    <div class="house-btn-row">
+      <button class="hbtn hbtn-merah active" onclick="showHouse('tt-l','merah',this)">Merah</button>
+      <button class="hbtn hbtn-hijau" onclick="showHouse('tt-l','hijau',this)">Hijau</button>
+      <button class="hbtn hbtn-biru" onclick="showHouse('tt-l','biru',this)">Biru</button>
+      <button class="hbtn hbtn-kuning" onclick="showHouse('tt-l','kuning',this)">Kuning</button>
+    </div>
+    <div class="card" id="con-tt-l"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+  <div id="tariktali-perempuan" style="display:none">
+    <div class="house-btn-row">
+      <button class="hbtn hbtn-merah active" onclick="showHouse('tt-p','merah',this)">Merah</button>
+      <button class="hbtn hbtn-hijau" onclick="showHouse('tt-p','hijau',this)">Hijau</button>
+      <button class="hbtn hbtn-biru" onclick="showHouse('tt-p','biru',this)">Biru</button>
+      <button class="hbtn hbtn-kuning" onclick="showHouse('tt-p','kuning',this)">Kuning</button>
+    </div>
+    <div class="card" id="con-tt-p"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PAGE 5 — ACARA PPKI
+══════════════════════════════════════════ -->
+<section id="page-ppki" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Acara PPKI</div>
+    <div class="ph-sub">Program Pendidikan Khas Integrasi</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-ppki">—</span></div>
+  </div></div>
+  <div class="subtab-bar">
+    <button class="subtab active" onclick="setSubtab('ppki','sukaneka',this)">Sukaneka</button>
+    <button class="subtab" onclick="setSubtab('ppki','75m',this)">75 Meter</button>
+  </div>
+  <!-- Sukaneka -->
+  <div id="ppki-sukaneka">
+    <div class="house-btn-row">
+      <button class="hbtn hbtn-merah active" onclick="showHouse('ppki-s','merah',this)">Merah</button>
+      <button class="hbtn hbtn-hijau" onclick="showHouse('ppki-s','hijau',this)">Hijau</button>
+      <button class="hbtn hbtn-biru" onclick="showHouse('ppki-s','biru',this)">Biru</button>
+      <button class="hbtn hbtn-kuning" onclick="showHouse('ppki-s','kuning',this)">Kuning</button>
+    </div>
+    <div class="card" id="con-ppki-s"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+  <!-- 75 Meter -->
+  <div id="ppki-75m" style="display:none">
+    <div class="subtab-bar" style="margin-bottom:1rem">
+      <button class="subtab active" onclick="setSubtab('ppki75','lt1',this)">Lelaki Tahap 1</button>
+      <button class="subtab" onclick="setSubtab('ppki75','lt2',this)">Lelaki Tahap 2</button>
+      <button class="subtab" onclick="setSubtab('ppki75','pt',this)">Perempuan Terbuka</button>
+    </div>
+    <div id="ppki75-lt1"><div class="card" id="con-ppki-lt1"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+    <div id="ppki75-lt2" style="display:none"><div class="card" id="con-ppki-lt2"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+    <div id="ppki75-pt" style="display:none"><div class="card" id="con-ppki-pt"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PAGE 6 — PRA SEKOLAH
+══════════════════════════════════════════ -->
+<section id="page-prasekolah" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Acara Pra Sekolah</div>
+    <div class="ph-sub">Senarai peserta mengikut kumpulan</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-prasekolah">—</span></div>
+  </div></div>
+  <div class="grp-btn-row">
+    <button class="grp-btn active" onclick="showGroup(1,this)">Kumpulan 1</button>
+    <button class="grp-btn" onclick="showGroup(2,this)">Kumpulan 2</button>
+    <button class="grp-btn" onclick="showGroup(3,this)">Kumpulan 3</button>
+    <button class="grp-btn" onclick="showGroup(4,this)">Kumpulan 4</button>
+  </div>
+  <div class="card" id="con-prasekolah"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PAGE 7 — ACARA TAHAP 1
+══════════════════════════════════════════ -->
+<section id="page-tahap1" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Acara Tahap 1</div>
+    <div class="ph-sub">Tahun 1, 2 &amp; 3</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-tahap1">—</span></div>
+  </div></div>
+  <div class="subtab-bar">
+    <button class="subtab active" onclick="setSubtab('tahap1','t1',this)">Tahun 1</button>
+    <button class="subtab" onclick="setSubtab('tahap1','t2',this)">Tahun 2</button>
+    <button class="subtab" onclick="setSubtab('tahap1','t3',this)">Tahun 3</button>
+  </div>
+
+  <!-- Tahun 1 -->
+  <div id="tahap1-t1">
+    <div class="subtab-bar" style="margin-bottom:1rem">
+      <button class="subtab active" onclick="setAcara('t1','sukaneka',this)">Sukaneka</button>
+      <button class="subtab" onclick="setAcara('t1','50ml',this)">50M (L)</button>
+      <button class="subtab" onclick="setAcara('t1','50mp',this)">50M (P)</button>
+    </div>
+    <div id="t1-sukaneka">
+      <div class="house-btn-row">
+        <button class="hbtn hbtn-merah active" onclick="showHouse('t1s','merah',this)">Merah</button>
+        <button class="hbtn hbtn-hijau" onclick="showHouse('t1s','hijau',this)">Hijau</button>
+        <button class="hbtn hbtn-biru" onclick="showHouse('t1s','biru',this)">Biru</button>
+        <button class="hbtn hbtn-kuning" onclick="showHouse('t1s','kuning',this)">Kuning</button>
+      </div>
+      <div class="card" id="con-t1s"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+    </div>
+    <div id="t1-50ml" style="display:none"><div class="card" id="con-t1-50ml"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+    <div id="t1-50mp" style="display:none"><div class="card" id="con-t1-50mp"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+  </div>
+
+  <!-- Tahun 2 -->
+  <div id="tahap1-t2" style="display:none">
+    <div class="subtab-bar" style="margin-bottom:1rem">
+      <button class="subtab active" onclick="setAcara('t2','sukaneka',this)">Sukaneka</button>
+      <button class="subtab" onclick="setAcara('t2','50ml',this)">50M (L)</button>
+      <button class="subtab" onclick="setAcara('t2','50mp',this)">50M (P)</button>
+    </div>
+    <div id="t2-sukaneka">
+      <div class="house-btn-row">
+        <button class="hbtn hbtn-merah active" onclick="showHouse('t2s','merah',this)">Merah</button>
+        <button class="hbtn hbtn-hijau" onclick="showHouse('t2s','hijau',this)">Hijau</button>
+        <button class="hbtn hbtn-biru" onclick="showHouse('t2s','biru',this)">Biru</button>
+        <button class="hbtn hbtn-kuning" onclick="showHouse('t2s','kuning',this)">Kuning</button>
+      </div>
+      <div class="card" id="con-t2s"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+    </div>
+    <div id="t2-50ml" style="display:none"><div class="card" id="con-t2-50ml"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+    <div id="t2-50mp" style="display:none"><div class="card" id="con-t2-50mp"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+  </div>
+
+  <!-- Tahun 3 -->
+  <div id="tahap1-t3" style="display:none">
+    <div class="subtab-bar" style="margin-bottom:1rem">
+      <button class="subtab active" onclick="setAcara('t3','sukaneka',this)">Sukaneka</button>
+      <button class="subtab" onclick="setAcara('t3','75ml',this)">75M (L)</button>
+      <button class="subtab" onclick="setAcara('t3','75mp',this)">75M (P)</button>
+    </div>
+    <div id="t3-sukaneka">
+      <div class="house-btn-row">
+        <button class="hbtn hbtn-merah active" onclick="showHouse('t3s','merah',this)">Merah</button>
+        <button class="hbtn hbtn-hijau" onclick="showHouse('t3s','hijau',this)">Hijau</button>
+        <button class="hbtn hbtn-biru" onclick="showHouse('t3s','biru',this)">Biru</button>
+        <button class="hbtn hbtn-kuning" onclick="showHouse('t3s','kuning',this)">Kuning</button>
+      </div>
+      <div class="card" id="con-t3s"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+    </div>
+    <div id="t3-75ml" style="display:none"><div class="card" id="con-t3-75ml"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+    <div id="t3-75mp" style="display:none"><div class="card" id="con-t3-75mp"><div class="loading"><span class="spin"></span>Memuatkan...</div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PAGE 8 — ACARA TAHAP 2
+══════════════════════════════════════════ -->
+<section id="page-tahap2" class="page">
+  <div class="ph"><div class="ph-accent"></div><div>
+    <div class="ph-title">Acara Tahap 2</div>
+    <div class="ph-sub">Tahun 4, 5 &amp; 6</div>
+    <div class="ph-ts"><span class="rdot"></span><span id="ts-tahap2">—</span></div>
+  </div></div>
+  <div class="subtab-bar">
+    <button class="subtab active" onclick="setSubtab('tahap2','tahun4',this)">Tahun 4</button>
+    <button class="subtab" onclick="setSubtab('tahap2','tahun5',this)">Tahun 5</button>
+    <button class="subtab" onclick="setSubtab('tahap2','tahun6',this)">Tahun 6</button>
+  </div>
+
+  <!-- Tahun 4 -->
+  <div id="tahap2-tahun4">
+    <div class="ev-btn-grid" id="ev-btns-t4">
+      <button class="ev-btn active" onclick="setEvBtn('t4','100ml',this)">100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','100mp',this)">100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','200ml',this)">200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','200mp',this)">200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','4x100ml',this)">4×100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','4x100mp',this)">4×100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','4x200ml',this)">4×200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','4x200mp',this)">4×200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lontarl',this)">Lontar Peluru (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lontarp',this)">Lontar Peluru (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lompatjl',this)">Lompat Jauh (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lompatjp',this)">Lompat Jauh (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lompattl',this)">Lompat Tinggi (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t4','lompattp',this)">Lompat Tinggi (P)</button>
+    </div>
+    <div class="card" id="con-t4"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+
+  <!-- Tahun 5 -->
+  <div id="tahap2-tahun5" style="display:none">
+    <div class="ev-btn-grid">
+      <button class="ev-btn active" onclick="setEvBtn('t5','100ml',this)">100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','100mp',this)">100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','200ml',this)">200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','200mp',this)">200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','4x100ml',this)">4×100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','4x100mp',this)">4×100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','4x200ml',this)">4×200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','4x200mp',this)">4×200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lontarl',this)">Lontar Peluru (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lontarp',this)">Lontar Peluru (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lompatjl',this)">Lompat Jauh (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lompatjp',this)">Lompat Jauh (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lompattl',this)">Lompat Tinggi (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t5','lompattp',this)">Lompat Tinggi (P)</button>
+    </div>
+    <div class="card" id="con-t5"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+
+  <!-- Tahun 6 -->
+  <div id="tahap2-tahun6" style="display:none">
+    <div class="ev-btn-grid">
+      <button class="ev-btn active" onclick="setEvBtn('t6','100ml',this)">100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','100mp',this)">100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','200ml',this)">200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','200mp',this)">200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','4x100ml',this)">4×100M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','4x100mp',this)">4×100M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','4x200ml',this)">4×200M (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','4x200mp',this)">4×200M (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lontarl',this)">Lontar Peluru (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lontarp',this)">Lontar Peluru (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lompatjl',this)">Lompat Jauh (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lompatjp',this)">Lompat Jauh (P)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lompattl',this)">Lompat Tinggi (L)</button>
+      <button class="ev-btn" onclick="setEvBtn('t6','lompattp',this)">Lompat Tinggi (P)</button>
+    </div>
+    <div class="card" id="con-t6"><div class="loading"><span class="spin"></span>Memuatkan...</div></div>
+  </div>
+</section>
 
 <script>
-const REFRESH_MS = 30000;
-const APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw_JVzZ-CtejwCCJOAsy6ac-qz8HwkzQVqxW2CxRh-Q3ZaUemauSaQ05YQlvKqcjy9o/exec';
+/* ════════════════════════════════════════
+   CONFIG — isi semula apabila Google Sheet baru sedia
+   ════════════════════════════════════════ */
+const APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxbjzmwgtX7qcyEeuFnXlkDER9iTzQVSqGX1kL-rpmwF00drhFw8C7d2VPS3RpIdX5l/exec';
 const SHEET_ID    = '1BOHJxJSQXr0_dMpZtsl44KsYIDlsu_YlbY_Wk5fdPCA';
 
-async function fetchCSV(gid) {
-  const url = `${APPS_SCRIPT}?id=${SHEET_ID}&gid=${gid}`;
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return await res.text();
-}
+const REFRESH_MS = 30000;
+const HOUSE_COLORS = {merah:'#e8453c',hijau:'#2ecc71',biru:'#3c82e8',kuning:'#f5c842'};
+const HOUSE_LABELS = {merah:'Merah',hijau:'Hijau',biru:'Biru',kuning:'Kuning'};
 
-const HOUSES = [
-  {key:'merah', label:'Merah', color:'#e8453c'},
-  {key:'hijau', label:'Hijau', color:'#2ecc71'},
-  {key:'biru',  label:'Biru',  color:'#3c82e8'},
-  {key:'kuning',label:'Kuning',color:'#f5c842'},
-];
+/* State */
+let curPage = 'kedudukan';
+let pageTimer = null;
+let dataCache = {};
 
-const HMAP = {MERAH:'#e8453c',HIJAU:'#2ecc71',BIRU:'#3c82e8',KUNING:'#f5c842'};
-const hc = k => HMAP[(k||'').toUpperCase()] || '#888';
-
-const PAGES = [
-  {id:'medal',      label:'Kedudukan Medal',      type:'markah',    gid:155371699},
-  {id:'ppki',       label:'PPKI',                 type:'sukaneka',  gid:258085683},
-  {id:'prasekolah', label:'Pra Sekolah',           type:'sukaneka',  gid:1472093462},
-  {id:'t1',         label:'Tahun 1',              type:'sukaneka',  gid:49708938},
-  {id:'t2',         label:'Tahun 2',              type:'sukaneka',  gid:2043442714},
-  {id:'t3',         label:'Tahun 3',              type:'sukaneka',  gid:234073445},
-  {id:'t4',         label:'Tahun 4',              type:'olahraga',  gid:0},
-  {id:'t5',         label:'Tahun 5',              type:'olahraga',  gid:898276486},
-  {id:'t6',         label:'Tahun 6',              type:'olahraga',  gid:568699660},
-  {id:'terbuka',    label:'Terbuka (Tarik Tali)', type:'tariktali', gid:776734765},
-  {id:'perbarisan', label:'Perbarisan Kontinjen', type:'perbarisan',gid:59197173},
-];
-
-let curPage = 'medal';
-let timer = null;
-let evOpen = {};
+/* ── DATA STATE ── */
+let state = {
+  perbarisan: {house:'merah'},
+  'tt-l': {house:'merah'}, 'tt-p': {house:'merah'},
+  'ppki-s': {house:'merah'},
+  prasekolah: {group:1},
+  t1s:{house:'merah'}, t2s:{house:'merah'}, t3s:{house:'merah'},
+  t4:{ev:'100ml'}, t5:{ev:'100ml'}, t6:{ev:'100ml'},
+};
 
 /* ── CSV PARSER ── */
-function csv(text){
+function parseCSV(text){
   const rows=[];
   for(const line of text.trim().split(/\r?\n/)){
     const cols=[];let cur='',inQ=false;
@@ -383,307 +550,425 @@ function csv(text){
   return rows;
 }
 
-/* ── PARSERS ── */
-
-/* Markah: read G2:K5 (row idx 1-4, col idx 6-10) */
-function parseMarkah(rows){
-  const res=[];
-  for(let i=1;i<=4;i++){
-    const r=rows[i]; if(!r) continue;
-    const nm=(r[6]||'').trim(); if(!nm) continue;
-    res.push({rumah:nm,emas:+r[7]||0,perak:+r[8]||0,gangsa:+r[9]||0,ke4:+r[10]||0});
-  }
-  return res;
-}
-
-/* Sukaneka: multiple acara stacked. Each block: house headers → participant rows → KEDUDUKAN row */
-function parseSukaneka(rows){
-  const acara=[];
-  let i=0;
-  while(i<rows.length){
-    const r=rows[i];
-    const ju=r.join('|').toUpperCase();
-    if(ju.includes('MERAH')&&ju.includes('HIJAU')&&ju.includes('BIRU')&&ju.includes('KUNING')){
-      /* find event title above */
-      let title='Acara '+(acara.length+1);
-      for(let j=i-1;j>=Math.max(0,i-5);j--){
-        const cand=rows[j].join('').trim();
-        if(cand){title=cand;break;}
-      }
-      /* find column positions */
-      const hdr=r.map(c=>c.toUpperCase().trim());
-      const cM=hdr.indexOf('MERAH'),cH=hdr.indexOf('HIJAU'),cB=hdr.indexOf('BIRU'),cK=hdr.indexOf('KUNING');
-      const col=(h)=>h>=0?h:(h===-1?1:h);
-      i++;
-      if(rows[i]&&rows[i].join('').toUpperCase().includes('NAMA'))i++;
-      const pts={merah:[],hijau:[],biru:[],kuning:[]};
-      let ked={merah:'',hijau:'',biru:'',kuning:''};
-      while(i<rows.length){
-        const row=rows[i];
-        const a0=(row[0]||'').trim().toUpperCase();
-        const jr=row.join('|').toUpperCase();
-        if(a0==='KEDUDUKAN'){
-          ked={merah:(row[cM]||'').trim(),hijau:(row[cH]||'').trim(),biru:(row[cB]||'').trim(),kuning:(row[cK]||'').trim()};
-          i++;break;
-        }
-        if(jr.includes('MERAH')&&jr.includes('HIJAU')&&jr.includes('BIRU')&&jr.includes('KUNING'))break;
-        const num=parseInt(row[0]);
-        if(!isNaN(num)&&num>0){
-          pts.merah.push({num,name:(cM>=0?row[cM]:row[1])||''});
-          pts.hijau.push({num,name:(cH>=0?row[cH]:row[2])||''});
-          pts.biru.push ({num,name:(cB>=0?row[cB]:row[3])||''});
-          pts.kuning.push({num,name:(cK>=0?row[cK]:row[4])||''});
-        }
-        i++;
-      }
-      acara.push({title,pts,ked});
-    }else{i++;}
-  }
-  return acara;
-}
-
-/* Olahraga (T4-T6): events with Saringan 1, Saringan 2, Akhir */
-function parseOlahraga(rows){
-  const evs=[];
-  let i=0;
-  while(i<rows.length){
-    const r=rows[i];
-    const b=(r[1]||'').trim();
-    const bU=b.toUpperCase();
-    /* event title detection: non-empty col B, looks like an event */
-    const isEvTitle=b&&!bU.match(/^\d+$/)&&!bU.includes('NAMA')&&!bU.includes('SARINGAN')&&!bU.includes('AKHIR')&&!bU.includes('MERAH')&&!bU.includes('KEDUDUKAN')&&!bU.includes('RUMAH')&&b.length>2;
-    if(isEvTitle){
-      const ev={title:b,s1:[],s2:[],akhir:[]};
-      i++;
-      let phase=null;
-      while(i<rows.length){
-        const row=rows[i];
-        const r1=(row[1]||'').trim().toUpperCase();
-        const r0=(row[0]||'').trim().toUpperCase();
-        if(r1.includes('SARINGAN 1')||(r1.includes('SARINGAN')&&r1.includes('1'))){phase='s1';i++;continue;}
-        if(r1.includes('SARINGAN 2')||(r1.includes('SARINGAN')&&r1.includes('2'))){phase='s2';i++;continue;}
-        if(r1==='AKHIR'){phase='akhir';i++;continue;}
-        if(r1.includes('NAMA')||r0.includes('NAMA')){i++;continue;}
-        /* stop if next event */
-        const rb=(row[1]||'').trim();
-        const rbU=rb.toUpperCase();
-        if(rb&&!rbU.match(/^\d+$/)&&!rbU.includes('NAMA')&&!rbU.includes('SARINGAN')&&!rbU.includes('AKHIR')&&!rbU.includes('MERAH')&&!rbU.includes('KEDUDUKAN')&&!rbU.includes('RUMAH')&&rb.length>2&&row[0]===''){
-          break;
-        }
-        const num=parseInt(row[1]);
-        if(!isNaN(num)&&num>0&&phase){
-          ev[phase].push({num,name:(row[2]||'').trim(),ked:(row[3]||'').trim(),rumah:(row[4]||'').trim()});
-        }
-        i++;
-      }
-      if(ev.s1.length||ev.s2.length||ev.akhir.length)evs.push(ev);
-    }else{i++;}
-  }
-  return evs;
-}
-
-/* Tarik Tali: two events (L+P), each with 4 house sections */
-function parseTarikTali(rows){
-  const evs=[];
-  let curEv=null,curH=null;
-  for(let i=0;i<rows.length;i++){
-    const r=rows[i];
-    const a0=(r[0]||'').trim().toUpperCase();
-    const b0=(r[1]||'').trim().toUpperCase();
-    const ju=r.join('|').toUpperCase();
-    if(ju.includes('TARIK TALI')&&!['MERAH','HIJAU','BIRU','KUNING'].includes(a0)){
-      if(curEv)evs.push(curEv);
-      curEv={title:(r[1]||r[0]||'').trim(),houses:{merah:{p:[],ked:''},hijau:{p:[],ked:''},biru:{p:[],ked:''},kuning:{p:[],ked:''}}};
-      curH=null;continue;
-    }
-    const houseKey={'MERAH':'merah','HIJAU':'hijau','BIRU':'biru','KUNING':'kuning'};
-    if(houseKey[b0]||houseKey[a0]){
-      curH=houseKey[b0]||houseKey[a0];
-      const nx=rows[i+1];if(nx&&nx.join('').toUpperCase().includes('NAMA'))i++;
-      continue;
-    }
-    if(a0==='KEDUDUKAN'&&curEv&&curH){
-      curEv.houses[curH].ked=(r[1]||'').trim();curH=null;continue;
-    }
-    const num=parseInt(r[0]);
-    if(!isNaN(num)&&num>0&&curEv&&curH){
-      curEv.houses[curH].p.push({num,name:(r[1]||'').trim()});
-    }
-  }
-  if(curEv)evs.push(curEv);
-  return evs;
-}
-
-/* Perbarisan: roles + participants (1-20) + markah */
-function parsePerbarisan(rows){
-  const data={roles:[],members:[],markah:{merah:'',hijau:'',biru:'',kuning:''}};
-  const ROLES=['PEMEGANG SEPANDUK','PEMEGANG BENDERA','MASKOT'];
-  for(let i=0;i<rows.length;i++){
-    const r=rows[i];
-    const a=(r[0]||'').trim();
-    const aU=a.toUpperCase();
-    if(!a||aU==='PERBARISAN'||aU==='AHLI PERBARISAN')continue;
-    if(['MERAH','HIJAU','BIRU','KUNING'].some(h=>aU.includes(h)&&!r[1]))continue;
-    if(ROLES.some(role=>aU.includes(role.split(' ')[1]))||ROLES.includes(aU)){
-      data.roles.push({role:a,merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()});
-      continue;
-    }
-    if(aU==='MARKAH'){
-      data.markah={merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()};
-      continue;
-    }
-    const num=parseInt(a);
-    if(!isNaN(num)&&num>0){
-      data.members.push({num,merah:(r[1]||'').trim(),hijau:(r[2]||'').trim(),biru:(r[3]||'').trim(),kuning:(r[4]||'').trim()});
-    }
-  }
-  return data;
-}
-
-/* ── RENDERERS ── */
-
-function renderMedal(data){
-  if(!data.length)return noData();
-  const icons=['🥇','🥈','🥉','4'];
-  return `<div class="medal-grid">`+data.map((h,i)=>`
-    <div class="medal-card" style="--hc:${hc(h.rumah)}">
-      <div class="mc-rank">${i+1}</div>
-      <div class="mc-house">${h.rumah}</div>
-      <div class="mc-counts">
-        <div class="mc-item"><div class="mc-num c-gold">${h.emas}</div><div class="mc-lbl">Emas</div></div>
-        <div class="mc-item"><div class="mc-num c-silver">${h.perak}</div><div class="mc-lbl">Perak</div></div>
-        <div class="mc-item"><div class="mc-num c-bronze">${h.gangsa}</div><div class="mc-lbl">Gangsa</div></div>
-        <div class="mc-item"><div class="mc-num c-fourth">${h.ke4}</div><div class="mc-lbl">Ke-4</div></div>
-      </div>
-    </div>`).join('')+`</div>`;
-}
-
-function renderSukaneka(acara){
-  if(!acara.length)return noData();
-  return acara.map(a=>`
-    <div class="acara-block">
-      <div class="acara-name">${a.title}</div>
-      <div class="house-cols">
-        ${HOUSES.map(h=>{
-          const pts=a.pts[h.key]||[];
-          const filled=pts.filter(p=>p.name);
-          const ked=a.ked[h.key]||'—';
-          return `
-          <div class="hcol">
-            <div class="hcol-head" style="background:${h.color}22;color:${h.color}">${h.label}</div>
-            <div class="hcol-body">
-              ${filled.length?filled.map(p=>`
-                <div class="prow"><span class="pnum">${p.num}</span><span class="pname">${p.name}</span></div>`).join('')
-                :`<div class="pempty">Tiada peserta</div>`}
-            </div>
-            <div class="ked-row">
-              <span class="ked-val" style="color:${h.color}">${ked}</span>
-              <span class="ked-lbl">Tempat</span>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-}
-
-function renderOlahraga(evs){
-  if(!evs.length)return noData();
-  return evs.map((ev,idx)=>{
-    const uid='ev_'+idx;
-    const open=evOpen[uid]||false;
-    return `
-    <div class="ev-card">
-      <div class="ev-head" onclick="toggleEv('${uid}')">
-        <span class="ev-name">${ev.title}</span>
-        <span class="ev-tog" id="${uid}_tog">${open?'&#9650; Tutup':'&#9660; Lihat peserta'}</span>
-      </div>
-      <div id="${uid}" style="display:${open?'block':'none'}">
-        <div class="ev-body">
-          ${renderPhase('Saringan 1',ev.s1)}
-          ${renderPhase('Saringan 2',ev.s2)}
-          ${renderPhase('Akhir',ev.akhir)}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function renderPhase(lbl,data){
-  if(!data||!data.length)return'';
-  return `<div class="phase-lbl">${lbl}</div>
-    <table class="ptable">
-      <thead><tr><th>#</th><th>Nama Peserta</th><th>Kedudukan</th><th>Rumah Sukan</th></tr></thead>
-      <tbody>${data.map(p=>`
-        <tr>
-          <td style="color:var(--muted)">${p.num}</td>
-          <td>${p.name||'—'}</td>
-          <td>${p.ked||'—'}</td>
-          <td><span class="hbadge" style="background:${hc(p.rumah)}22;color:${hc(p.rumah)}">${p.rumah||'—'}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
-
-function renderTarikTali(evs){
-  if(!evs.length)return noData();
-  return evs.map(ev=>`
-    <div class="stitle"><span class="stitle-ac">//</span> ${ev.title}</div>
-    <div class="tt-wrap">
-      ${HOUSES.map(h=>{
-        const hd=ev.houses[h.key]||{p:[],ked:''};
-        return `
-        <div class="ttcol">
-          <div class="ttcol-head" style="background:${h.color}22;color:${h.color}">${h.label}</div>
-          <div class="ttcol-body">
-            ${hd.p.filter(p=>p.name).map(p=>`
-              <div class="ttrow"><span class="ttn">${p.num}</span><span>${p.name}</span></div>`).join('')
-              ||'<div class="ttrow" style="color:var(--muted)">Tiada peserta</div>'}
-          </div>
-          <div class="ttfoot">Tempat: <strong style="color:${h.color}">${hd.ked||'—'}</strong></div>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
-}
-
-function renderPerbarisan(data){
-  const hasData=data.roles.length||data.members.length;
-  if(!hasData)return noData();
-  const thead=`<tr><th style="width:160px">Peranan / Bil</th>${HOUSES.map(h=>`<th style="color:${h.color}">${h.label}</th>`).join('')}</tr>`;
-  const roleRows=data.roles.map(r=>`<tr><td>${r.role}</td><td>${r.merah||'—'}</td><td>${r.hijau||'—'}</td><td>${r.biru||'—'}</td><td>${r.kuning||'—'}</td></tr>`).join('');
-  const memberRows=data.members.map(m=>`<tr><td>${m.num}</td><td>${m.merah||'—'}</td><td>${m.hijau||'—'}</td><td>${m.biru||'—'}</td><td>${m.kuning||'—'}</td></tr>`).join('');
-  const markahRow=`<tr class="pb-markah"><td>MARKAH</td><td>${data.markah.merah||'—'}</td><td>${data.markah.hijau||'—'}</td><td>${data.markah.biru||'—'}</td><td>${data.markah.kuning||'—'}</td></tr>`;
-  return `
-    ${data.roles.length?`
-    <div class="pb-section">
-      <div class="pb-sec-hd">Pemegang Bendera, Sepanduk &amp; Maskot</div>
-      <table class="pb-table"><thead>${thead}</thead><tbody>${roleRows}</tbody></table>
-    </div>`:''}
-    <div class="pb-section">
-      <div class="pb-sec-hd">Ahli Perbarisan</div>
-      <table class="pb-table"><thead>${thead}</thead><tbody>${memberRows}${markahRow}</tbody></table>
-    </div>`;
-}
-
-function noData(){return`<div class="loading">Tiada data dijumpai. Pastikan URL betul dan sheet telah diterbitkan.</div>`;}
-
-/* ── FETCH & LOAD ── */
-async function loadPage(id){
-  const pg=PAGES.find(p=>p.id===id); if(!pg)return;
-  const con=document.getElementById('con-'+id);
-  const ts=document.getElementById('ts-'+id);
+/* ── FETCH ── */
+async function fetchSheet(gid, range){
+  if(!APPS_SCRIPT||!SHEET_ID) return null;
+  const key = range ? `gid_${gid}_${range}` : `gid_${gid}`;
   try{
-    const rows=csv(await fetchCSV(pg.gid));
-    let html='';
-    if(pg.type==='markah')     html=renderMedal(parseMarkah(rows));
-    else if(pg.type==='sukaneka')   html=renderSukaneka(parseSukaneka(rows));
-    else if(pg.type==='olahraga')   html=renderOlahraga(parseOlahraga(rows));
-    else if(pg.type==='tariktali')  html=renderTarikTali(parseTarikTali(rows));
-    else if(pg.type==='perbarisan') html=renderPerbarisan(parsePerbarisan(rows));
-    con.innerHTML=html;
-    if(ts)ts.textContent='Kemaskini: '+new Date().toLocaleTimeString('ms-MY');
+    let url = `${APPS_SCRIPT}?id=${SHEET_ID}&gid=${gid}&t=${Date.now()}`;
+    if(range) url += `&range=${encodeURIComponent(range)}`;
+    const res = await fetch(url,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    dataCache[key] = rows;
+    return rows;
   }catch(e){
-    con.innerHTML=`<div class="loading">Gagal memuatkan data.<br><small style="color:var(--muted)">${e.message}</small></div>`;
+    return dataCache[key]||null;
   }
+}
+
+/* ── RENDER PERBARISAN ── */
+function renderPerbarisan(rows, house){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+
+  /* Row 0 = header (A3:E3) — cari index kolum rumah */
+  const hdr = rows[0].map(h=>h.toUpperCase().trim());
+  const colIdx = hdr.findIndex(h=>h.includes(house.toUpperCase()));
+  if(colIdx<0) return '<div class="empty-state">Kolum tidak dijumpai.</div>';
+
+  const hc = HOUSE_COLORS[house]||'#888';
+  const houseLabel = house.charAt(0).toUpperCase()+house.slice(1);
+
+  /* Bahagian peranan khas (row 2-4 = index 2,3,4 dalam array) */
+  const roles = [
+    {label:'Pemegang Sepanduk', val: rows[2]?.[colIdx]||''},
+    {label:'Pemegang Bendera',  val: rows[3]?.[colIdx]||''},
+    {label:'Maskot',            val: rows[4]?.[colIdx]||''},
+  ];
+
+  /* Ahli perbarisan bermula row 6 (index 6) hingga akhir */
+  const ahli = rows.slice(6).filter(r=>r[colIdx]&&r[colIdx].toString().trim());
+
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid ${hc}30">
+      <span style="width:14px;height:14px;border-radius:50%;background:${hc};display:inline-block;flex-shrink:0"></span>
+      <span style="font-weight:600;font-size:14px;color:${hc}">Pasukan ${houseLabel}</span>
+      <span style="font-size:12px;color:var(--ink-l);margin-left:auto">${3 + ahli.length} peserta</span>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-l);margin-bottom:6px">Peranan Khas</div>
+    <ul class="name-list" style="margin-bottom:1.25rem">
+      ${roles.map(r=>`
+        <li class="name-item">
+          <span class="name-num" style="min-width:120px;color:var(--ink-m);font-weight:500">${r.label}</span>
+          <span class="name-text">${r.val||'<span style="color:var(--ink-l);font-style:italic">Kosong</span>'}</span>
+        </li>`).join('')}
+    </ul>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-l);margin-bottom:6px">Ahli Perbarisan</div>
+    ${ahli.length ? `<ul class="name-list">
+      ${ahli.map((r,i)=>`
+        <li class="name-item">
+          <span class="name-num">${rows[6+i]?.[0]||i+1}</span>
+          <span class="name-text">${r[colIdx]}</span>
+        </li>`).join('')}
+    </ul>` : '<div class="empty-state">Tiada ahli perbarisan.</div>'}`;
+}
+
+/* ── RENDER LARIAN (Saringan 1, Saringan 2, Akhir) ── */
+function renderLarian(rowsS1, rowsS2, rowsAkhir, gender){
+  function section(rows, label){
+    if(!rows||rows.length<2) return '';
+    const hdr = rows[0].map(h=>h.toString().toUpperCase().trim());
+    const bilIdx  = hdr.findIndex(h=>h.includes('BIL'));
+    const namaIdx = hdr.findIndex(h=>h.includes('NAMA'));
+    const kedIdx  = hdr.findIndex(h=>h.includes('KEDUDUKAN'));
+    const rumahIdx= hdr.findIndex(h=>h.includes('RUMAH'));
+    const items = rows.slice(1).filter(r=>r[namaIdx]&&r[namaIdx].toString().trim());
+    if(!items.length) return '';
+    return `
+      <div style="margin-bottom:1.25rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">${label}</div>
+        <div style="overflow-x:auto">
+        <table class="live-table">
+          <thead><tr>
+            <th>#</th><th>Nama Peserta</th>
+            ${kedIdx>=0?'<th style="text-align:center">Kedudukan</th>':''}
+            ${rumahIdx>=0?'<th>Rumah Sukan</th>':''}
+          </tr></thead>
+          <tbody>${items.map((r,i)=>{
+            const ked=parseInt(r[kedIdx]);
+            const kedClass=ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
+            const rumah=(r[rumahIdx]||'').toLowerCase();
+            const hc=HOUSE_COLORS[rumah]||'#888';
+            return `<tr>
+              <td style="color:var(--ink-l);font-size:12px">${r[bilIdx]||i+1}</td>
+              <td style="font-weight:500">${r[namaIdx]||'—'}</td>
+              ${kedIdx>=0?`<td style="text-align:center">${r[kedIdx]?`<span class="ked-badge ${kedClass}">${r[kedIdx]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>`:''}
+              ${rumahIdx>=0?`<td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[rumahIdx]||'—'}</span></td>`:''}
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>
+      </div>`;
+  }
+  const html = section(rowsS1,'Saringan 1') + section(rowsS2,'Saringan 2') + section(rowsAkhir,'Akhir');
+  return html || '<div class="empty-state">Tiada data.</div>';
+}
+
+/* ── RENDER KUMPULAN (PRA SEKOLAH) ── */
+function renderKumpulan(rows, grp){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  /* Row 0=header (KUMPULAN 1,2,3,4), Row 1=BIL+NAMA, Row 2+=data */
+  const hdr = rows[0].map(h=>h.toString().toUpperCase().trim());
+  const colIdx = hdr.findIndex(h=>h.includes('KUMPULAN '+grp));
+  if(colIdx<0) return '<div class="empty-state">Kumpulan tidak dijumpai.</div>';
+  const items = rows.slice(2).filter(r=>r[colIdx]&&r[colIdx].toString().trim());
+  if(!items.length) return `<div class="empty-state">Tiada peserta untuk Kumpulan ${grp}.</div>`;
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid var(--lime)30">
+      <span style="font-weight:600;font-size:14px;color:var(--lime-d)">Kumpulan ${grp}</span>
+      <span style="font-size:12px;color:var(--ink-l);margin-left:auto">${items.length} peserta</span>
+    </div>
+    <ul class="name-list">
+      ${items.map((r,i)=>`
+        <li class="name-item">
+          <span class="name-num">${r[0]||i+1}</span>
+          <span class="name-text">${r[colIdx]||'—'}</span>
+        </li>`).join('')}
+    </ul>`;
+}
+
+/* ── RENDER SUKANEKA (PPKI) ── */
+function renderSukaneka(rows, house){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hc = HOUSE_COLORS[house]||'#888';
+  const houseLabel = house.charAt(0).toUpperCase()+house.slice(1);
+  /* Row 0=header rumah, Row 1=BIL+NAMA header, Row 2+ = data */
+  const hdr = rows[0].map(h=>h.toUpperCase().trim());
+  const colIdx = hdr.findIndex(h=>h.includes(house.toUpperCase()));
+  if(colIdx<0) return '<div class="empty-state">Kolum tidak dijumpai.</div>';
+  const bilIdx = rows[1]?rows[1].findIndex(h=>h.toString().toUpperCase().includes('BIL')):0;
+  const items = rows.slice(2).filter(r=>r[colIdx]&&r[colIdx].toString().trim());
+  if(!items.length) return `<div class="empty-state">Tiada peserta untuk pasukan ${houseLabel}.</div>`;
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid ${hc}30">
+      <span style="width:14px;height:14px;border-radius:50%;background:${hc};display:inline-block;flex-shrink:0"></span>
+      <span style="font-weight:600;font-size:14px;color:${hc}">Pasukan ${houseLabel}</span>
+      <span style="font-size:12px;color:var(--ink-l);margin-left:auto">${items.length} peserta</span>
+    </div>
+    <ul class="name-list">
+      ${items.map((r,i)=>`
+        <li class="name-item">
+          <span class="name-num">${r[0]||i+1}</span>
+          <span class="name-text">${r[colIdx]||'—'}</span>
+        </li>`).join('')}
+    </ul>`;
+}
+
+/* ── RENDER 75M / LARIAN LIVE ── */
+function render75m(rows, label){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hdr = rows[0].map(h=>h.toString().toUpperCase().trim());
+  const bilIdx  = hdr.findIndex(h=>h.includes('BIL'));
+  const namaIdx = hdr.findIndex(h=>h.includes('NAMA'));
+  const kedIdx  = hdr.findIndex(h=>h.includes('KEDUDUKAN'));
+  const items = rows.slice(1).filter(r=>r[namaIdx]&&r[namaIdx].toString().trim());
+  if(!items.length) return '<div class="empty-state">Tiada peserta.</div>';
+  return `
+    <div style="font-size:12px;color:var(--ink-l);margin-bottom:.75rem">${items.length} peserta</div>
+    <div style="overflow-x:auto">
+    <table class="live-table">
+      <thead><tr>
+        <th>#</th>
+        <th>Nama Peserta</th>
+        ${kedIdx>=0?'<th style="text-align:center">Kedudukan</th>':''}
+      </tr></thead>
+      <tbody>${items.map((r,i)=>{
+        const ked=parseInt(r[kedIdx]);
+        const kedClass=ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
+        return `<tr>
+          <td style="color:var(--ink-l);font-size:12px">${r[bilIdx]||i+1}</td>
+          <td style="font-weight:500">${r[namaIdx]||'—'}</td>
+          ${kedIdx>=0?`<td style="text-align:center">${r[kedIdx]?`<span class="ked-badge ${kedClass}">${r[kedIdx]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>`:''}
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+/* ── RENDER TARIK TALI ── */
+function renderTarikTali(rows, house){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hc = HOUSE_COLORS[house]||'#888';
+  const houseLabel = house.charAt(0).toUpperCase()+house.slice(1);
+  /* Row 0 = header (BIL, NAMA, RUMAH SUKAN) */
+  const hdr = rows[0].map(h=>h.toUpperCase().trim());
+  const bilIdx  = hdr.findIndex(h=>h.includes('BIL'));
+  const namaIdx = hdr.findIndex(h=>h.includes('NAMA'));
+  const items = rows.slice(1).filter(r=>r[namaIdx]&&r[namaIdx].toString().trim());
+  if(!items.length) return `<div class="empty-state">Tiada peserta untuk pasukan ${houseLabel}.</div>`;
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid ${hc}30">
+      <span style="width:14px;height:14px;border-radius:50%;background:${hc};display:inline-block;flex-shrink:0"></span>
+      <span style="font-weight:600;font-size:14px;color:${hc}">Pasukan ${houseLabel}</span>
+      <span style="font-size:12px;color:var(--ink-l);margin-left:auto">${items.length} peserta</span>
+    </div>
+    <ul class="name-list">
+      ${items.map((r,i)=>`
+        <li class="name-item">
+          <span class="name-num">${r[bilIdx]||i+1}</span>
+          <span class="name-text">${r[namaIdx]||'—'}</span>
+        </li>`).join('')}
+    </ul>`;
+}
+
+/* ── RENDER NAME LIST ── */
+function renderNameList(rows, houseCol){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hdr = rows[0].map(h=>h.toUpperCase().trim());
+  const col = hdr.indexOf(houseCol.toUpperCase());
+  const numCol = hdr.indexOf('BIL')||0;
+  const nameCol = hdr.findIndex(h=>h==='NAMA'||h.includes('NAMA'));
+  if(col<0) return '<div class="empty-state">Kolum tidak dijumpai.</div>';
+  const items = rows.slice(1).filter(r=>r[col]&&r[col].trim());
+  if(!items.length) return '<div class="empty-state">Tiada peserta.</div>';
+  return `<ul class="name-list">${items.map((r,i)=>`
+    <li class="name-item">
+      <span class="name-num">${r[numCol]||i+1}</span>
+      <span class="name-text">${r[nameCol]||r[col]||'—'}</span>
+    </li>`).join('')}</ul>`;
+}
+
+function renderLiveTable(rows){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hdr=rows[0];
+  const namaIdx=hdr.findIndex(h=>h.toUpperCase().includes('NAMA'));
+  const rumahIdx=hdr.findIndex(h=>h.toUpperCase().includes('RUMAH'));
+  const kedIdx=hdr.findIndex(h=>h.toUpperCase().includes('KEDUDUKAN'));
+  return `
+    <div style="overflow-x:auto">
+    <table class="live-table">
+      <thead><tr>
+        <th>#</th>
+        <th>Nama Peserta</th>
+        <th>Rumah Sukan</th>
+        <th>Kedudukan</th>
+      </tr></thead>
+      <tbody>${rows.slice(1).map((r,i)=>{
+        const ked=parseInt(r[kedIdx]);
+        const kedClass=ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
+        const rumah=(r[rumahIdx]||'').toLowerCase();
+        const hc=HOUSE_COLORS[rumah]||'#888';
+        return `<tr>
+          <td style="color:var(--ink-l);font-size:12px">${i+1}</td>
+          <td style="font-weight:500">${r[namaIdx]||'—'}</td>
+          <td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[rumahIdx]||'—'}</span></td>
+          <td>${r[kedIdx]?`<span class="ked-badge ${kedClass}">${r[kedIdx]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+function renderKedudukan(rows){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hdr=rows[0].map(h=>h.toUpperCase().trim());
+  let rumahIdx    = hdr.findIndex(h=>h.includes('RUMAH'));
+  if(rumahIdx<0) rumahIdx = 0; /* A14 kosong — guna kolum pertama sebagai rumah */
+  const individuIdx = hdr.findIndex(h=>h.includes('INDIVIDU'));
+  const pasukIdx    = hdr.findIndex(h=>h.includes('BERPASUKAN')||h.includes('PASUKAN'));
+  const perbarisIdx = hdr.findIndex(h=>h.includes('PERBARISAN'));
+  const sukanekaIdx = hdr.findIndex(h=>h.includes('SUKANEKA'));
+  const sukantaraIdx= hdr.findIndex(h=>h.includes('SUKANTARA'));
+  const markahIdx   = hdr.findIndex(h=>h.includes('MARKAH')||h.includes('JUMLAH')||h.includes('KESELURUHAN'));
+  const sorted=[...rows.slice(1)].filter(r=>r[rumahIdx]!==undefined&&r[rumahIdx].toString().trim()!=='').sort((a,b)=>(+b[markahIdx]||0)-(+a[markahIdx]||0));
+  const cols=[
+    {idx:individuIdx,   label:'Acara Individu'},
+    {idx:pasukIdx,      label:'Acara Berpasukan'},
+    {idx:perbarisIdx,   label:'Perbarisan'},
+    {idx:sukanekaIdx,   label:'Sukaneka'},
+    {idx:sukantaraIdx,  label:'Sukantara'},
+    {idx:markahIdx,     label:'Markah'},
+  ].filter(c=>c.idx>=0);
+  return `<table class="rank-table">
+    <thead><tr>
+      <th>#</th><th>Rumah Sukan</th>
+      ${cols.map(c=>`<th style="text-align:center">${c.label}</th>`).join('')}
+    </tr></thead>
+    <tbody>${sorted.map((r,i)=>{
+      const rumah=(r[rumahIdx]||'').toLowerCase().trim();
+      const hc=HOUSE_COLORS[rumah]||'#888';
+      return `<tr>
+        <td><span class="rank-num ${i===0?'r1':''}">${i+1}</span></td>
+        <td><span class="house-pill" style="background:${hc}18;color:${hc}">
+          <span class="house-dot" style="background:${hc}"></span>${r[rumahIdx]}
+        </span></td>
+        ${cols.map(c=>`<td style="text-align:center;font-weight:${c.label==='Markah'?'700':'400'};color:${c.label==='Markah'?'var(--fuschia)':'var(--ink)'};font-size:${c.label==='Markah'?'15px':'13px'}">${r[c.idx]||'—'}</td>`).join('')}
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderPingat(rows){
+  if(!rows||rows.length<2) return '<div class="empty-state">Tiada data.</div>';
+  const hdr=rows[0].map(h=>h.toString().toUpperCase().trim());
+  /* G1 mungkin kosong — gunakan kolum 0 sebagai rumah jika RUMAH tidak dijumpai */
+  let rumahIdx=hdr.findIndex(h=>h.includes('RUMAH'));
+  if(rumahIdx<0) rumahIdx=0;
+  const emasIdx=hdr.findIndex(h=>h.includes('EMAS'));
+  const perakIdx=hdr.findIndex(h=>h.includes('PERAK'));
+  const gangsaIdx=hdr.findIndex(h=>h.includes('GANGSA'));
+  const data=rows.slice(1).filter(r=>r[rumahIdx]&&r[rumahIdx].toString().trim());
+  if(!data.length) return '<div class="empty-state">Tiada data pingat.</div>';
+  return `<table class="rank-table">
+    <thead><tr><th>Rumah</th><th style="text-align:center">🥇 Emas</th><th style="text-align:center">🥈 Perak</th><th style="text-align:center">🥉 Gangsa</th></tr></thead>
+    <tbody>${data.map(r=>{
+      const rumah=(r[rumahIdx]||'').toLowerCase().trim();
+      const hc=HOUSE_COLORS[rumah]||'#888';
+      return `<tr>
+        <td><span class="house-pill" style="background:${hc}18;color:${hc}">
+          <span class="house-dot" style="background:${hc}"></span>${r[rumahIdx]}
+        </span></td>
+        <td style="text-align:center"><span class="medal-gold">${r[emasIdx]||0}</span></td>
+        <td style="text-align:center"><span class="medal-silver">${r[perakIdx]||0}</span></td>
+        <td style="text-align:center"><span class="medal-bronze">${r[gangsaIdx]||0}</span></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+/* ── TAHAP 2 EVENT RANGES ── */
+const TAHAP2_GID = { t4:0, t5:2898276486, t6:568699660 };
+const TAHAP2_EV = {
+  '100ml':    { s1:'A3:C7',    s2:'E3:G7',    akhir:'A10:D18'  },
+  '100mp':    { s1:'A23:C27',  s2:'E23:G27',  akhir:'A30:D38'  },
+  '200ml':    { s1:'A44:C48',  s2:'E44:G48',  akhir:'A51:D59'  },
+  '200mp':    { s1:'A64:C68',  s2:'E64:G68',  akhir:'A71:D79'  },
+  'lontarl':  {                               akhir:'A85:D93'  },
+  'lontarp':  {                               akhir:'A97:D105' },
+  'lompatjl': {                               akhir:'A111:D119'},
+  'lompatjp': {                               akhir:'A123:D131'},
+  'lompattl': {                               akhir:'A137:D145'},
+  'lompattp': {                               akhir:'A149:D157'},
+  '4x100ml':  {                               akhir:'A163:D182'},
+  '4x100mp':  {                               akhir:'A187:D206'},
+  '4x200ml':  {                               akhir:'A212:D231'},
+  '4x200mp':  {                               akhir:'A236:D255'},
+};
+
+async function loadTahap2Event(yr, ev){
+  const gid = TAHAP2_GID[yr];
+  const evCfg = TAHAP2_EV[ev];
+  if(!evCfg) return;
+  const cacheKey = yr+'_'+ev;
+  const el = document.getElementById('con-'+yr);
+  if(!el) return;
+
+  /* Fetch jika belum cache */
+  if(!dataCache[cacheKey+'_akhir']){
+    if(evCfg.s1){
+      const rs1 = await fetchSheet(gid, evCfg.s1);
+      const rs2 = await fetchSheet(gid, evCfg.s2);
+      if(rs1) dataCache[cacheKey+'_s1'] = rs1;
+      if(rs2) dataCache[cacheKey+'_s2'] = rs2;
+    }
+    const ra = await fetchSheet(gid, evCfg.akhir);
+    if(ra) dataCache[cacheKey+'_akhir'] = ra;
+  }
+
+  el.innerHTML = renderTahap2Event(
+    dataCache[cacheKey+'_s1']||null,
+    dataCache[cacheKey+'_s2']||null,
+    dataCache[cacheKey+'_akhir']||null
+  );
+}
+
+function renderTahap2Event(rowsS1, rowsS2, rowsAkhir){
+  function section(rows, label){
+    if(!rows||rows.length<2) return '';
+    const hdr = rows[0].map(h=>h.toString().toUpperCase().trim());
+    const bilIdx  = hdr.findIndex(h=>h.includes('BIL'));
+    const namaIdx = hdr.findIndex(h=>h.includes('NAMA'));
+    const kedIdx  = hdr.findIndex(h=>h.includes('KEDUDUKAN'));
+    const rumahIdx= hdr.findIndex(h=>h.includes('RUMAH'));
+    const items = rows.slice(1).filter(r=>r[namaIdx]&&r[namaIdx].toString().trim());
+    if(!items.length) return '';
+    return `
+      <div style="margin-bottom:1.25rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">${label}</div>
+        <div style="overflow-x:auto">
+        <table class="live-table">
+          <thead><tr>
+            <th>#</th><th>Nama Peserta</th>
+            ${kedIdx>=0?'<th style="text-align:center">Kedudukan</th>':''}
+            ${rumahIdx>=0?'<th>Rumah Sukan</th>':''}
+          </tr></thead>
+          <tbody>${items.map((r,i)=>{
+            const ked=parseInt(r[kedIdx]);
+            const kedClass=ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
+            const rumah=(r[rumahIdx]||'').toLowerCase();
+            const hc=HOUSE_COLORS[rumah]||'#888';
+            return `<tr>
+              <td style="color:var(--ink-l);font-size:12px">${r[bilIdx]||i+1}</td>
+              <td style="font-weight:500">${r[namaIdx]||'—'}</td>
+              ${kedIdx>=0?`<td style="text-align:center">${r[kedIdx]?`<span class="ked-badge ${kedClass}">${r[kedIdx]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>`:''}
+              ${rumahIdx>=0?`<td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[rumahIdx]||'—'}</span></td>`:''}
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>
+      </div>`;
+  }
+  const html = section(rowsS1,'Saringan 1') + section(rowsS2,'Saringan 2') + section(rowsAkhir,'Akhir');
+  return html||'<div class="empty-state">Tiada data.</div>';
+}
+
+/* ── PLACEHOLDER (sebelum Sheet baru disambung) ── */
+function placeholder(msg){
+  return `<div class="empty-state" style="padding:2rem">
+    <div style="font-size:32px;margin-bottom:.5rem">🔗</div>
+    <div style="font-weight:500;margin-bottom:.25rem">Google Sheet belum disambung</div>
+    <div style="font-size:12px;color:var(--ink-l)">${msg||'Sila kemaskini APPS_SCRIPT dan SHEET_ID.'}</div>
+  </div>`;
 }
 
 /* ── NAVIGATION ── */
@@ -691,26 +976,292 @@ function go(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   curPage=id;
-  clearInterval(timer);
+  clearInterval(pageTimer);
   loadPage(id);
-  timer=setInterval(()=>loadPage(id),REFRESH_MS);
+  pageTimer=setInterval(()=>loadPage(id),REFRESH_MS);
 }
 
-function toggleEv(uid){
-  const el=document.getElementById(uid);
-  const tog=document.getElementById(uid+'_tog');
-  if(!el)return;
-  const isOpen=el.style.display!=='none';
-  el.style.display=isOpen?'none':'block';
-  evOpen[uid]=!isOpen;
-  if(tog)tog.innerHTML=isOpen?'&#9660; Lihat peserta':'&#9650; Tutup';
+/* ── LOAD PAGE ── */
+async function loadPage(id){
+  if(!APPS_SCRIPT){
+    setPlaceholders(id);
+    return;
+  }
+  /* GID mapping */
+  const GID = {
+    kedudukan:  155371699,
+    perbarisan: 59197173,
+    tariktali:  776734765,
+    ppki:       258085683,
+    prasekolah: 1472093462,
+    tahap1:     49708938,
+    tahap2:     null,
+  };
+
+  if(id === 'kedudukan'){
+    const rowsKeseluruhan = await fetchSheet(155371699, 'A14:G18');
+    const rowsPingat      = await fetchSheet(155371699, 'G1:J6');
+    const elK = document.getElementById('con-keseluruhan');
+    const elP = document.getElementById('con-pingat');
+    if(elK) elK.innerHTML = rowsKeseluruhan ? renderKedudukan(rowsKeseluruhan) : placeholder();
+    if(elP) elP.innerHTML = rowsPingat      ? renderPingat(rowsPingat)         : placeholder();
+    updateTS('kedudukan');
+    return;
+  }
+
+  if(id === 'perbarisan'){
+    const rows = await fetchSheet(59197173, 'A3:E38');
+    if(rows) dataCache['perbarisan'] = rows;
+    const house = state.perbarisan?.house || 'merah';
+    const el = document.getElementById('con-perbarisan');
+    if(el) el.innerHTML = rows ? renderPerbarisan(rows, house) : placeholder();
+    updateTS('perbarisan');
+    return;
+  }
+
+  if(id === 'tariktali'){
+    /* Fetch semua range sekaligus — Lelaki (A) dan Perempuan (F) */
+    const RANGES_L = {merah:'A3:C13', hijau:'A15:C25', biru:'A27:C37', kuning:'A39:C49'};
+    const RANGES_P = {merah:'F3:H13', hijau:'F15:H25', biru:'F27:H37', kuning:'F39:H49'};
+    for(const h of ['merah','hijau','biru','kuning']){
+      const rl = await fetchSheet(776734765, RANGES_L[h]);
+      const rp = await fetchSheet(776734765, RANGES_P[h]);
+      if(rl) dataCache['ttl_'+h] = rl;
+      if(rp) dataCache['ttp_'+h] = rp;
+    }
+    /* Render paparan semasa */
+    const houseL = state['tt-l']?.house || 'merah';
+    const houseP = state['tt-p']?.house || 'merah';
+    const elL = document.getElementById('con-tt-l');
+    const elP2 = document.getElementById('con-tt-p');
+    if(elL) elL.innerHTML = dataCache['ttl_'+houseL] ? renderTarikTali(dataCache['ttl_'+houseL], houseL) : placeholder();
+    if(elP2) elP2.innerHTML = dataCache['ttp_'+houseP] ? renderTarikTali(dataCache['ttp_'+houseP], houseP) : placeholder();
+    updateTS('tariktali');
+    return;
+  }
+
+  if(id === 'ppki'){
+    /* Sukaneka — fetch ikut rumah */
+    for(const h of ['merah','hijau','biru','kuning']){
+      const r = await fetchSheet(258085683, 'A3:E34');
+      if(r) dataCache['ppki_s'] = r;
+      break;
+    }
+    /* 75 Meter — 3 kategori */
+    const rLT1 = await fetchSheet(258085683, 'A40:C47');
+    const rLT2 = await fetchSheet(258085683, 'A51:C58');
+    const rPT  = await fetchSheet(258085683, 'A62:C69');
+    if(rLT1) dataCache['ppki_lt1'] = rLT1;
+    if(rLT2) dataCache['ppki_lt2'] = rLT2;
+    if(rPT)  dataCache['ppki_pt']  = rPT;
+    /* Render semasa */
+    const houseS = state['ppki-s']?.house || 'merah';
+    const elS  = document.getElementById('con-ppki-s');
+    const elL1 = document.getElementById('con-ppki-lt1');
+    const elL2 = document.getElementById('con-ppki-lt2');
+    const elPT = document.getElementById('con-ppki-pt');
+    if(elS)  elS.innerHTML  = dataCache['ppki_s']   ? renderSukaneka(dataCache['ppki_s'], houseS)   : placeholder();
+    if(elL1) elL1.innerHTML = dataCache['ppki_lt1'] ? render75m(dataCache['ppki_lt1'], 'Lelaki Tahap 1')   : placeholder();
+    if(elL2) elL2.innerHTML = dataCache['ppki_lt2'] ? render75m(dataCache['ppki_lt2'], 'Lelaki Tahap 2')   : placeholder();
+    if(elPT) elPT.innerHTML = dataCache['ppki_pt']  ? render75m(dataCache['ppki_pt'],  'Perempuan Terbuka'): placeholder();
+    updateTS('ppki');
+    return;
+  }
+
+  if(id === 'prasekolah'){
+    const rows = await fetchSheet(1472093462, 'A3:E34');
+    if(rows) dataCache['prasekolah'] = rows;
+    const grp = state.prasekolah?.group || 1;
+    const el = document.getElementById('con-prasekolah');
+    if(el) el.innerHTML = rows ? renderKumpulan(rows, grp) : placeholder();
+    updateTS('prasekolah');
+    return;
+  }
+
+  if(id === 'tahap1'){
+    const T1_GID = 49708938;
+    const T2_GID = 2043442714;
+    const T3_GID = 234073445;
+    /* Ranges sama untuk semua tahun */
+    const R = {
+      s:   'A3:E34',
+      ll1: 'A41:D45', ll2: 'A49:D53', la: 'A56:D65',
+      pl1: 'A70:D74', pl2: 'A78:D82', pa: 'A85:D94',
+    };
+    for(const [yr, gid] of [['t1',T1_GID],['t2',T2_GID],['t3',T3_GID]]){
+      const rs  = await fetchSheet(gid, R.s);
+      const rll1= await fetchSheet(gid, R.ll1);
+      const rll2= await fetchSheet(gid, R.ll2);
+      const rla = await fetchSheet(gid, R.la);
+      const rpl1= await fetchSheet(gid, R.pl1);
+      const rpl2= await fetchSheet(gid, R.pl2);
+      const rpa = await fetchSheet(gid, R.pa);
+      if(rs)   dataCache[yr+'_s']   = rs;
+      if(rll1) dataCache[yr+'_ll1'] = rll1;
+      if(rll2) dataCache[yr+'_ll2'] = rll2;
+      if(rla)  dataCache[yr+'_la']  = rla;
+      if(rpl1) dataCache[yr+'_pl1'] = rpl1;
+      if(rpl2) dataCache[yr+'_pl2'] = rpl2;
+      if(rpa)  dataCache[yr+'_pa']  = rpa;
+    }
+    /* Render paparan semasa */
+    for(const yr of ['t1','t2','t3']){
+      const hs = state[yr+'s']?.house || 'merah';
+      const elS = document.getElementById('con-'+yr+'s');
+      if(elS) elS.innerHTML = dataCache[yr+'_s'] ? renderSukaneka(dataCache[yr+'_s'], hs) : placeholder();
+      /* Larian Lelaki */
+      const elL = document.getElementById('con-'+yr+'-50ml') || document.getElementById('con-'+yr+'-75ml');
+      if(elL) elL.innerHTML = renderLarian(
+        dataCache[yr+'_ll1'], dataCache[yr+'_ll2'], dataCache[yr+'_la'], 'Lelaki'
+      );
+      /* Larian Perempuan */
+      const elP = document.getElementById('con-'+yr+'-50mp') || document.getElementById('con-'+yr+'-75mp');
+      if(elP) elP.innerHTML = renderLarian(
+        dataCache[yr+'_pl1'], dataCache[yr+'_pl2'], dataCache[yr+'_pa'], 'Perempuan'
+      );
+    }
+    updateTS('tahap1');
+    return;
+  }
+
+  if(id === 'tahap2'){
+    /* Load acara pertama (100ML) untuk tahun semasa */
+    const curYr = state.tahap2_yr || 't4';
+    const curEv = state[curYr]?.ev || '100ml';
+    await loadTahap2Event(curYr, curEv);
+    updateTS('tahap2');
+    return;
+  }
+  const rows = await fetchSheet(GID[id]);
+  renderPage(id, rows);
+  updateTS(id);
+}
+
+function setPlaceholders(id){
+  const ids = {
+    kedudukan:['con-keseluruhan','con-pingat'],
+    perbarisan:['con-perbarisan'],
+    tariktali:['con-tt-l','con-tt-p'],
+    ppki:['con-ppki-s','con-ppki-lt1','con-ppki-lt2','con-ppki-pt'],
+    prasekolah:['con-prasekolah'],
+    tahap1:['con-t1s','con-t1-50ml','con-t1-50mp','con-t2s','con-t2-50ml','con-t2-50mp','con-t3s','con-t3-75ml','con-t3-75mp'],
+    tahap2:['con-t4','con-t5','con-t6'],
+  };
+  (ids[id]||[]).forEach(cid=>{
+    const el=document.getElementById(cid);
+    if(el) el.innerHTML=placeholder();
+  });
+}
+
+function renderPage(id,rows){ /* extend bila GID diisi */ }
+
+function updateTS(id){
+  const el=document.getElementById('ts-'+id);
+  if(el) el.textContent='Kemaskini: '+new Date().toLocaleTimeString('ms-MY');
+  document.getElementById('live-ts').textContent=new Date().toLocaleTimeString('ms-MY');
+}
+
+/* ── HOUSE BUTTONS ── */
+function showHouse(scope, house, btn){
+  const row = btn.closest('.house-btn-row');
+  row.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state[scope] = {...(state[scope]||{}), house};
+  const conId = 'con-'+scope;
+  const el = document.getElementById(conId);
+  if(!el) return;
+
+  if(scope==='perbarisan'){
+    const rows = dataCache['perbarisan'];
+    el.innerHTML = rows ? renderPerbarisan(rows, house) : placeholder('Data belum dimuatkan.');
+  } else if(scope==='tt-l'){
+    const rows = dataCache['ttl_'+house];
+    el.innerHTML = rows ? renderTarikTali(rows, house) : placeholder('Data belum dimuatkan.');
+  } else if(scope==='tt-p'){
+    const rows = dataCache['ttp_'+house];
+    el.innerHTML = rows ? renderTarikTali(rows, house) : placeholder('Data belum dimuatkan.');
+  } else if(scope==='ppki-s'){
+    const rows = dataCache['ppki_s'];
+    el.innerHTML = rows ? renderSukaneka(rows, house) : placeholder('Data belum dimuatkan.');
+  } else if(['t1s','t2s','t3s'].includes(scope)){
+    const yr = scope.replace('s','');
+    const rows = dataCache[yr+'_s'];
+    el.innerHTML = rows ? renderSukaneka(rows, house) : placeholder('Data belum dimuatkan.');
+  } else {
+    const rows = dataCache['scope_'+scope];
+    if(rows) el.innerHTML = renderNameList(rows, house);
+  }
+}
+
+/* ── SUBTABS ── */
+function setSubtab(page, sub, btn){
+  const bar=btn.closest('.subtab-bar');
+  bar.querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const prefix=`${page}-`;
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el=>{
+    el.style.display=el.id===`${prefix}${sub}`?'block':'none';
+  });
+  /* Auto-load tahap2 when switching tahun */
+  if(page==='tahap2'){
+    const yrMap={'tahun4':'t4','tahun5':'t5','tahun6':'t6'};
+    const yr = yrMap[sub];
+    if(yr){
+      state.tahap2_yr=yr;
+      const ev=state[yr]?.ev||'100ml';
+      loadTahap2Event(yr,ev);
+    }
+  }
+}
+
+/* ── ACARA BUTTONS (Tahap 1) ── */
+function setAcara(year, acara, btn){
+  const wrap=btn.closest('.subtab-bar').nextElementSibling?.parentElement||btn.closest('div');
+  btn.closest('.subtab-bar').querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const prefix=`${year}-`;
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el=>{
+    el.style.display=el.id===`${prefix}${acara}`?'block':'none';
+  });
+}
+
+/* ── EVENT BUTTONS (Tahap 2) ── */
+async function setEvBtn(year, ev, btn){
+  btn.closest('.ev-btn-grid').querySelectorAll('.ev-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state[year]={ev};
+  state.tahap2_yr = year;
+  const el=document.getElementById('con-'+year);
+  if(!el) return;
+  el.innerHTML='<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  await loadTahap2Event(year, ev);
+  updateTS('tahap2');
+}
+
+/* ── GROUP BUTTONS (Pra Sekolah) ── */
+function showGroup(g, btn){
+  document.querySelectorAll('.grp-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state.prasekolah={group:g};
+  const el=document.getElementById('con-prasekolah');
+  if(!el) return;
+  const rows = dataCache['prasekolah'];
+  if(rows) el.innerHTML = renderKumpulan(rows, g);
+  else el.innerHTML = placeholder('Data belum dimuatkan.');
+}
+
+/* ── LIVE TS ── */
+function updateLiveTS(){
+  document.getElementById('live-ts').textContent=new Date().toLocaleTimeString('ms-MY');
 }
 
 /* ── INIT ── */
 window.addEventListener('DOMContentLoaded',()=>{
-  go('medal',document.querySelector('.nav-btn.active'));
+  updateLiveTS();
+  setInterval(updateLiveTS,1000);
+  go('kedudukan',document.querySelector('.nav-btn.active'));
 });
 </script>
 </body>
