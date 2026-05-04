@@ -667,7 +667,8 @@ function skeleton(n=5){
   return `<div class="sk-wrap"><div class="sk-bar sk-title"></div>${items}</div>`;
 }
 
-/* ── BATCH FETCH — hantar semua ranges dalam SATU request ── */
+/* ── BATCH FETCH — hantar semua ranges dalam SATU request ──
+   Fallback automatik ke fetch berasingan jika Apps Script belum dikemaskini */
 async function fetchBatch(requests){
   if(!APPS_SCRIPT||!SHEET_ID) return requests.map(()=>null);
   const now = Date.now();
@@ -679,7 +680,15 @@ async function fetchBatch(requests){
     const url = `${APPS_SCRIPT}?id=${SHEET_ID}&ranges=${encodeURIComponent(JSON.stringify(requests))}&t=${now}`;
     const res = await fetch(url, {cache:'no-store', redirect:'follow'});
     if(!res.ok) throw new Error('HTTP '+res.status);
-    const results = await res.json();
+    const text = await res.text();
+    let results;
+    try{
+      /* Cuba parse JSON — hanya berjaya jika Apps Script sudah dikemaskini */
+      results = JSON.parse(text);
+    }catch(parseErr){
+      /* Apps Script lama — fallback ke fetch berasingan seperti biasa */
+      results = await Promise.all(requests.map(r=>fetchSheet(r.gid, r.range)));
+    }
     const hasAny = results.some(r=>r&&r.length>1);
     if(hasAny){
       dataCache[batchKey]=results; cacheTS[batchKey]=now;
@@ -692,7 +701,12 @@ async function fetchBatch(requests){
     }
     return results;
   }catch(e){
-    return dataCache[batchKey]||requests.map(()=>null);
+    /* Fallback penuh — fetch berasingan */
+    try{
+      return await Promise.all(requests.map(r=>fetchSheet(r.gid, r.range)));
+    }catch(e2){
+      return dataCache[batchKey]||requests.map(()=>null);
+    }
   }
 }
 const TAHAP1_GIDS = {t1:49708938, t2:2043442714, t3:234073445};
@@ -1272,6 +1286,7 @@ async function loadPage(id){
     const el = document.getElementById('con-perbarisan');
     if(el) el.innerHTML = rows ? renderPerbarisan(rows, house) : placeholder();
     updateTS('perbarisan');
+    fetchSheet(59197173, 'A41:G41'); /* prefetch kedudukan akhir */
     return;
   }
 
@@ -1320,6 +1335,7 @@ async function loadPage(id){
     if(elL2) elL2.innerHTML = dataCache['ppki_lt2'] ? render75m(dataCache['ppki_lt2'], 'Lelaki Tahap 2')     : placeholder();
     if(elPT) elPT.innerHTML = dataCache['ppki_pt']  ? render75m(dataCache['ppki_pt'],  'Perempuan Terbuka')  : placeholder();
     updateTS('ppki');
+    fetchSheet(258085683, 'A36:E36'); /* prefetch kedudukan akhir */
     return;
   }
 
@@ -1337,6 +1353,7 @@ async function loadPage(id){
     const curYr = state.tahap1_yr || 't1';
     await loadTahap1Year(curYr);
     updateTS('tahap1');
+    fetchSheet(TAHAP1_GIDS[curYr], 'A41:E41'); /* prefetch kedudukan akhir */
     return;
   }
 
@@ -1425,6 +1442,7 @@ function setSubtab(page, sub, btn){
     if(yr){
       state.tahap1_yr=yr;
       loadTahap1Year(yr);
+      fetchSheet(TAHAP1_GIDS[yr], 'A41:E41'); /* prefetch kedudukan akhir */
     }
   }
   /* Auto-load tahap2 when switching tahun */
@@ -1458,7 +1476,7 @@ async function setEvBtn(year, ev, btn){
   state.tahap2_yr = year;
   const el=document.getElementById('con-'+year);
   if(!el) return;
-  el.innerHTML='<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  el.innerHTML=skeleton();
   await loadTahap2Event(year, ev);
   updateTS('tahap2');
 }
@@ -1474,7 +1492,7 @@ async function showPerbarisanAkhir(btn){
   }
   btn.classList.add('active');
   el.style.display = 'block';
-  el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  el.innerHTML = skeleton(4);
   const rows = await fetchSheet(59197173, 'A41:G41');
   if(!rows||rows.length<1){ el.innerHTML='<div class="empty-state">Tiada data.</div>'; return; }
   const row = rows[0];
@@ -1548,7 +1566,7 @@ async function showSukanekAkhir(yr, btn){
   }
   btn.classList.add('active');
   el.style.display = 'block';
-  el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  el.innerHTML = skeleton(4);
   const gid = TAHAP1_GID[yr];
   const rows = await fetchSheet(gid, 'A41:E41');
   if(!rows||rows.length<1){ el.innerHTML='<div class="empty-state">Tiada data.</div>'; return; }
@@ -1582,7 +1600,7 @@ async function showPPKIAkhir(btn){
   }
   btn.classList.add('active');
   el.style.display = 'block';
-  el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  el.innerHTML = skeleton(4);
   const rows = await fetchSheet(258085683, 'A36:E36');
   if(!rows||rows.length<1){ el.innerHTML='<div class="empty-state">Tiada data.</div>'; return; }
   /* A36=label, B36=Merah, C36=Hijau, D36=Biru, E36=Kuning */
