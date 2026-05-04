@@ -55,7 +55,7 @@ body::before{content:'';position:fixed;inset:0;
 #header{position:relative;z-index:10;background:linear-gradient(135deg,#2d5a08 0%,#4a3010 40%,#8a1040 100%);padding:1.25rem 1.5rem 1rem;border-bottom:3px solid var(--fuschia)}
 #header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1.25rem}
 #logo-wrap{flex-shrink:0}
-#logo-wrap img{width:72px;height:72px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+#logo-wrap img{width:72px;height:72px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));mix-blend-mode:screen}
 #school-info{flex:1}
 #ev-label{font-size:clamp(1rem,3vw,1.5rem);letter-spacing:.05em;text-transform:uppercase;color:#fff;font-family:"Playfair Display",serif;font-weight:700;margin-bottom:3px}
 #ev-name{font-family:'DM Sans',sans-serif;font-size:clamp(.75rem,1.8vw,.95rem);font-weight:500;color:var(--matcha-l);line-height:1.2;margin-top:2px}
@@ -209,7 +209,7 @@ body::before{content:'';position:fixed;inset:0;
     <div id="school-info">
       <div id="ev-label">Kejohanan Sukan Tahunan</div>
       <div id="ev-name">Sekolah Kebangsaan Taman Permata</div>
-      <div id="school-name">Gombak, Selangor &nbsp;|&nbsp; <span class="live-dot"></span> Keputusan Langsung &nbsp;<span id="live-ts"></span></div>
+      <div id="school-name">Gombak, Selangor</div>
     </div>
     <div id="ev-year">2026</div>
   </div>
@@ -231,7 +231,7 @@ body::before{content:'';position:fixed;inset:0;
 <div id="live-bar">
   <span class="live-dot"></span>
   <span>Keputusan Langsung</span>
-  <span id="live-ts"></span>
+  <span style="color:rgba(255,255,255,.9);font-weight:600" id="live-ts"></span>
 </div>
 
 
