@@ -180,6 +180,16 @@ body::before{content:'';position:fixed;inset:0;
 .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--matcha);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── SKELETON LOADING ── */
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-wrap{padding:.75rem .25rem}
+.sk-bar{border-radius:6px;background:linear-gradient(90deg,rgba(126,200,32,.1) 25%,rgba(126,200,32,.22) 50%,rgba(126,200,32,.1) 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite}
+.sk-title{height:10px;width:36%;margin-bottom:14px}
+.sk-row{display:flex;gap:9px;margin-bottom:9px;align-items:center}
+.sk-num{width:26px;height:34px;flex-shrink:0;border-radius:50%}
+.sk-name{flex:1;height:34px}
+.sk-tag{width:66px;height:22px;border-radius:99px}
+
 /* ── RESPONSIVE ── */
 @media(max-width:560px){
   .ev-btn-grid{gap:5px}
@@ -646,7 +656,45 @@ async function fetchSheet(gid, range){
   }
 }
 
-/* ── TAHAP 1 — load tahun aktif sahaja ── */
+/* ── SKELETON — rangka animasi semasa data dimuatkan ── */
+function skeleton(n=5){
+  const items = Array.from({length:n},(_,i)=>`
+    <div class="sk-row" style="opacity:${Math.max(0.2,1-i*0.15).toFixed(2)}">
+      <div class="sk-bar sk-num"></div>
+      <div class="sk-bar sk-name"></div>
+      <div class="sk-bar sk-tag"></div>
+    </div>`).join('');
+  return `<div class="sk-wrap"><div class="sk-bar sk-title"></div>${items}</div>`;
+}
+
+/* ── BATCH FETCH — hantar semua ranges dalam SATU request ── */
+async function fetchBatch(requests){
+  if(!APPS_SCRIPT||!SHEET_ID) return requests.map(()=>null);
+  const now = Date.now();
+  const batchKey = 'batch|'+requests.map(r=>`${r.gid}:${r.range}`).join('|');
+  if(dataCache[batchKey] && cacheTS[batchKey] && (now-cacheTS[batchKey])<28000){
+    return dataCache[batchKey];
+  }
+  try{
+    const url = `${APPS_SCRIPT}?id=${SHEET_ID}&ranges=${encodeURIComponent(JSON.stringify(requests))}&t=${now}`;
+    const res = await fetch(url, {cache:'no-store', redirect:'follow'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const results = await res.json();
+    const hasAny = results.some(r=>r&&r.length>1);
+    if(hasAny){
+      dataCache[batchKey]=results; cacheTS[batchKey]=now;
+      results.forEach((rows,i)=>{
+        if(rows&&rows.length>1){
+          const k=`gid_${requests[i].gid}_${requests[i].range}`;
+          dataCache[k]=rows; cacheTS[k]=now;
+        }
+      });
+    }
+    return results;
+  }catch(e){
+    return dataCache[batchKey]||requests.map(()=>null);
+  }
+}
 const TAHAP1_GIDS = {t1:49708938, t2:2043442714, t3:234073445};
 const TAHAP1_R = {
   s:'A3:E39', ll1:'A44:D50', ll2:'A52:D58', la:'A60:D70',
@@ -655,16 +703,24 @@ const TAHAP1_R = {
 async function loadTahap1Year(yr){
   const gid = TAHAP1_GIDS[yr];
   if(!gid) return;
-  /* Fetch secara selari (Promise.all) — jauh lebih laju */
-  const [rs,rll1,rll2,rla,rpl1,rpl2,rpa] = await Promise.all([
-    fetchSheet(gid, TAHAP1_R.s),
-    fetchSheet(gid, TAHAP1_R.ll1),
-    fetchSheet(gid, TAHAP1_R.ll2),
-    fetchSheet(gid, TAHAP1_R.la),
-    fetchSheet(gid, TAHAP1_R.pl1),
-    fetchSheet(gid, TAHAP1_R.pl2),
-    fetchSheet(gid, TAHAP1_R.pa),
+  /* Tunjuk skeleton pada containers yang kosong */
+  const elS = document.getElementById('con-'+yr+'s');
+  const elL = document.getElementById('con-'+yr+'-50ml') || document.getElementById('con-'+yr+'-75ml');
+  const elP = document.getElementById('con-'+yr+'-50mp') || document.getElementById('con-'+yr+'-75mp');
+  if(elS && !elS.querySelector('ul'))    elS.innerHTML = skeleton();
+  if(elL && !elL.querySelector('table')) elL.innerHTML = skeleton();
+  if(elP && !elP.querySelector('table')) elP.innerHTML = skeleton();
+  /* Batch fetch — 7 ranges dalam 1 request */
+  const results = await fetchBatch([
+    {gid, range: TAHAP1_R.s},
+    {gid, range: TAHAP1_R.ll1},
+    {gid, range: TAHAP1_R.ll2},
+    {gid, range: TAHAP1_R.la},
+    {gid, range: TAHAP1_R.pl1},
+    {gid, range: TAHAP1_R.pl2},
+    {gid, range: TAHAP1_R.pa},
   ]);
+  const [rs,rll1,rll2,rla,rpl1,rpl2,rpa] = results || [];
   if(rs)   dataCache[yr+'_s']   = rs;
   if(rll1) dataCache[yr+'_ll1'] = rll1;
   if(rll2) dataCache[yr+'_ll2'] = rll2;
@@ -674,12 +730,9 @@ async function loadTahap1Year(yr){
   if(rpa)  dataCache[yr+'_pa']  = rpa;
   /* Render Sukaneka */
   const hs = state[yr+'s']?.house || 'merah';
-  const elS = document.getElementById('con-'+yr+'s');
   if(elS) elS.innerHTML = rs ? renderSukaneka(rs, hs) : placeholder();
   /* Render 50M / 75M */
-  const elL = document.getElementById('con-'+yr+'-50ml') || document.getElementById('con-'+yr+'-75ml');
   if(elL) elL.innerHTML = renderLarian(rll1, rll2, rla, 'Lelaki');
-  const elP = document.getElementById('con-'+yr+'-50mp') || document.getElementById('con-'+yr+'-75mp');
   if(elP) elP.innerHTML = renderLarian(rpl1, rpl2, rpa, 'Perempuan');
 }
 
@@ -1051,20 +1104,22 @@ async function loadTahap2Event(yr, ev){
   const ck = yr+'_'+ev;
   const el = document.getElementById('con-'+yr);
   if(!el) return;
-  el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
+  el.innerHTML = skeleton();
+  /* Batch fetch — combined+akhir atau akhir sahaja dalam 1 request */
   if(evCfg.combined){
-    const rcomb = await fetchSheet(gid, evCfg.combined);
-    const ra    = await fetchSheet(gid, evCfg.akhir);
+    const results = await fetchBatch([
+      {gid, range: evCfg.combined},
+      {gid, range: evCfg.akhir},
+    ]) || [];
+    const [rcomb, ra] = results;
     if(rcomb){
-      /* S1: A=0(BIL), B=1(NAMA), C=2(KED), D=3(RUMAH) */
       dataCache[ck+'_s1'] = rcomb.map(r=>[r[0],r[1],r[2],r[3]]);
-      /* S2: E=4(BIL), F=5(NAMA), G=6(KED), D=3(RUMAH) → format sama [BIL,NAMA,KED,RUMAH] */
       dataCache[ck+'_s2'] = rcomb.map(r=>[r[4],r[5],r[6],r[3]]);
     }
     if(ra) dataCache[ck+'_akhir'] = ra;
   } else {
-    const ra = await fetchSheet(gid, evCfg.akhir);
-    if(ra) dataCache[ck+'_akhir'] = ra;
+    const results = await fetchBatch([{gid, range: evCfg.akhir}]) || [];
+    if(results[0]) dataCache[ck+'_akhir'] = results[0];
   }
   el.innerHTML = renderTahap2Event(
     dataCache[ck+'_s1']   ||null,
@@ -1150,6 +1205,22 @@ function placeholder(msg){
 }
 
 /* ── NAVIGATION ── */
+function showSkeleton(id){
+  const map = {
+    kedudukan:  ['con-keseluruhan','con-pingat'],
+    perbarisan: ['con-perbarisan'],
+    tariktali:  ['con-tt-l','con-tt-p'],
+    ppki:       ['con-ppki-s','con-ppki-lt1','con-ppki-lt2','con-ppki-pt'],
+    prasekolah: ['con-prasekolah'],
+    tahap1:     ['con-t1s'],
+    tahap2:     ['con-t4'],
+  };
+  (map[id]||[]).forEach(cid=>{
+    const el=document.getElementById(cid);
+    /* Skeleton hanya pada muat pertama — jangan ganti data lama */
+    if(el && !el.querySelector('table,ul')) el.innerHTML=skeleton();
+  });
+}
 function go(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -1157,6 +1228,7 @@ function go(id,btn){
   if(btn) btn.classList.add('active');
   curPage=id;
   clearInterval(pageTimer);
+  showSkeleton(id);
   loadPage(id);
   const ms = REFRESH_MS[id] || 60000;
   pageTimer = setInterval(()=>loadPage(id), ms);
@@ -1180,8 +1252,11 @@ async function loadPage(id){
   };
 
   if(id === 'kedudukan'){
-    const rowsKeseluruhan = await fetchSheet(155371699, 'G8:K12');
-    const rowsPingat      = await fetchSheet(155371699, 'G1:J5');
+    const results = await fetchBatch([
+      {gid:155371699, range:'G8:K12'},
+      {gid:155371699, range:'G1:J5'},
+    ]);
+    const [rowsKeseluruhan, rowsPingat] = results || [];
     const elK = document.getElementById('con-keseluruhan');
     const elP = document.getElementById('con-pingat');
     if(elK) elK.innerHTML = rowsKeseluruhan ? renderKedudukan(rowsKeseluruhan) : placeholder();
@@ -1201,50 +1276,49 @@ async function loadPage(id){
   }
 
   if(id === 'tariktali'){
-    /* Fetch semua range sekaligus — Lelaki (A) dan Perempuan (F) */
     const RANGES_L = {merah:'A3:D13', hijau:'A15:D25', biru:'A27:D37', kuning:'A39:D49'};
     const RANGES_P = {merah:'F3:I13', hijau:'F15:I25', biru:'F27:I37', kuning:'F39:I49'};
-    for(const h of ['merah','hijau','biru','kuning']){
-      const rl = await fetchSheet(776734765, RANGES_L[h]);
-      const rp = await fetchSheet(776734765, RANGES_P[h]);
-      if(rl) dataCache['ttl_'+h] = rl;
-      if(rp) dataCache['ttp_'+h] = rp;
-    }
-    /* Render paparan semasa */
+    const houses = ['merah','hijau','biru','kuning'];
+    /* Batch fetch — 8 ranges dalam 1 request */
+    const results = await fetchBatch([
+      ...houses.map(h=>({gid:776734765, range:RANGES_L[h]})),
+      ...houses.map(h=>({gid:776734765, range:RANGES_P[h]})),
+    ]) || [];
+    houses.forEach((h,i)=>{
+      if(results[i])   dataCache['ttl_'+h] = results[i];
+      if(results[i+4]) dataCache['ttp_'+h] = results[i+4];
+    });
     const houseL = state['tt-l']?.house || 'merah';
     const houseP = state['tt-p']?.house || 'merah';
     const elL = document.getElementById('con-tt-l');
     const elP2 = document.getElementById('con-tt-p');
-    if(elL) elL.innerHTML = dataCache['ttl_'+houseL] ? renderTarikTali(dataCache['ttl_'+houseL], houseL) : placeholder();
+    if(elL)  elL.innerHTML  = dataCache['ttl_'+houseL] ? renderTarikTali(dataCache['ttl_'+houseL], houseL) : placeholder();
     if(elP2) elP2.innerHTML = dataCache['ttp_'+houseP] ? renderTarikTali(dataCache['ttp_'+houseP], houseP) : placeholder();
     updateTS('tariktali');
     return;
   }
 
   if(id === 'ppki'){
-    /* Sukaneka — fetch ikut rumah */
-    for(const h of ['merah','hijau','biru','kuning']){
-      const r = await fetchSheet(258085683, 'A3:E34');
-      if(r) dataCache['ppki_s'] = r;
-      break;
-    }
-    /* 75 Meter — 3 kategori */
-    const rLT1 = await fetchSheet(258085683, 'A40:C47');
-    const rLT2 = await fetchSheet(258085683, 'A51:C58');
-    const rPT  = await fetchSheet(258085683, 'A62:C69');
-    if(rLT1) dataCache['ppki_lt1'] = rLT1;
-    if(rLT2) dataCache['ppki_lt2'] = rLT2;
-    if(rPT)  dataCache['ppki_pt']  = rPT;
-    /* Render semasa */
+    /* Batch fetch — 4 ranges dalam 1 request */
+    const results = await fetchBatch([
+      {gid:258085683, range:'A3:E34'},
+      {gid:258085683, range:'A40:C47'},
+      {gid:258085683, range:'A51:C58'},
+      {gid:258085683, range:'A62:C69'},
+    ]) || [];
+    if(results[0]) dataCache['ppki_s']   = results[0];
+    if(results[1]) dataCache['ppki_lt1'] = results[1];
+    if(results[2]) dataCache['ppki_lt2'] = results[2];
+    if(results[3]) dataCache['ppki_pt']  = results[3];
     const houseS = state['ppki-s']?.house || 'merah';
     const elS  = document.getElementById('con-ppki-s');
     const elL1 = document.getElementById('con-ppki-lt1');
     const elL2 = document.getElementById('con-ppki-lt2');
     const elPT = document.getElementById('con-ppki-pt');
-    if(elS)  elS.innerHTML  = dataCache['ppki_s']   ? renderSukaneka(dataCache['ppki_s'], houseS)   : placeholder();
-    if(elL1) elL1.innerHTML = dataCache['ppki_lt1'] ? render75m(dataCache['ppki_lt1'], 'Lelaki Tahap 1')   : placeholder();
-    if(elL2) elL2.innerHTML = dataCache['ppki_lt2'] ? render75m(dataCache['ppki_lt2'], 'Lelaki Tahap 2')   : placeholder();
-    if(elPT) elPT.innerHTML = dataCache['ppki_pt']  ? render75m(dataCache['ppki_pt'],  'Perempuan Terbuka'): placeholder();
+    if(elS)  elS.innerHTML  = dataCache['ppki_s']   ? renderSukaneka(dataCache['ppki_s'], houseS)            : placeholder();
+    if(elL1) elL1.innerHTML = dataCache['ppki_lt1'] ? render75m(dataCache['ppki_lt1'], 'Lelaki Tahap 1')     : placeholder();
+    if(elL2) elL2.innerHTML = dataCache['ppki_lt2'] ? render75m(dataCache['ppki_lt2'], 'Lelaki Tahap 2')     : placeholder();
+    if(elPT) elPT.innerHTML = dataCache['ppki_pt']  ? render75m(dataCache['ppki_pt'],  'Perempuan Terbuka')  : placeholder();
     updateTS('ppki');
     return;
   }
