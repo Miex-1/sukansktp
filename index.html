@@ -2,6 +2,14 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8"/>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G5XSWKBMEK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G5XSWKBMEK');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Kejohanan Sukan Tahunan 2026 — SK Taman Permata</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -530,10 +538,18 @@ body::before{content:'';position:fixed;inset:0;
 /* ════════════════════════════════════════
    CONFIG — isi semula apabila Google Sheet baru sedia
    ════════════════════════════════════════ */
-const APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxbjzmwgtX7qcyEeuFnXlkDER9iTzQVSqGX1kL-rpmwF00drhFw8C7d2VPS3RpIdX5l/exec';
+const APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyo-c3Kk4QJRNuNrXYABwrjq4odtDn9ge5VCR4JDpG-wNl1pVcCWuTogrT6uNSWRWeJ/exec';
 const SHEET_ID    = '1BOHJxJSQXr0_dMpZtsl44KsYIDlsu_YlbY_Wk5fdPCA';
 
-const REFRESH_MS = 30000;
+const REFRESH_MS = {
+  kedudukan:  30000,   /* 30 saat  — berubah kerap semasa acara */
+  perbarisan: 60000,   /* 60 saat  */
+  tariktali:  3600000, /* 1 jam    — data tetap sebelum hari kejohanan */
+  ppki:       60000,   /* 60 saat  */
+  prasekolah: 60000,   /* 60 saat  */
+  tahap1:     60000,   /* 60 saat  */
+  tahap2:     60000,   /* 60 saat  */
+};
 const HOUSE_COLORS = {merah:'#e8453c',hijau:'#2ecc71',biru:'#3c82e8',kuning:'#f5c842'};
 const HOUSE_LABELS = {merah:'Merah',hijau:'Hijau',biru:'Biru',kuning:'Kuning'};
 
@@ -555,13 +571,47 @@ let state = {
 /* ── CSV PARSER ── */
 function parseCSV(text){
   const rows=[];
-  for(const line of text.trim().split(/\r?\n/)){
-    const cols=[];let cur='',inQ=false;
-    for(let i=0;i<line.length;i++){
-      const c=line[i];
-      if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cols.push(cur.trim());cur='';}else cur+=c;
+  const lines = text.trim().split(/\r?\n/);
+  let i = 0;
+  while(i < lines.length){
+    let line = lines[i];
+    const cols=[];
+    let cur='', inQ=false;
+    let j = 0;
+    while(j < line.length){
+      const c = line[j];
+      if(c==='"'){
+        if(inQ && line[j+1]==='"'){ cur+='"'; j++; }
+        else inQ=!inQ;
+      } else if(c===','&&!inQ){
+        cols.push(cur.trim()); cur='';
+      } else {
+        cur+=c;
+      }
+      j++;
     }
-    cols.push(cur.trim());rows.push(cols);
+    /* Handle multi-line quoted field (newline dalam nama) */
+    while(inQ && i+1 < lines.length){
+      i++;
+      line = lines[i];
+      cur += ' '; /* ganti newline dengan space */
+      j = 0;
+      while(j < line.length){
+        const c = line[j];
+        if(c==='"'){
+          if(inQ && line[j+1]==='"'){ cur+='"'; j++; }
+          else inQ=!inQ;
+        } else if(c===','&&!inQ){
+          cols.push(cur.trim()); cur='';
+        } else {
+          cur+=c;
+        }
+        j++;
+      }
+    }
+    cols.push(cur.trim());
+    rows.push(cols);
+    i++;
   }
   return rows;
 }
@@ -574,18 +624,22 @@ async function fetchSheet(gid, range){
   const key = range ? `gid_${gid}_${range}` : `gid_${gid}`;
   const now = Date.now();
   /* Guna cache jika data masih segar (< 25 saat) */
-  if(dataCache[key] && cacheTS[key] && (now - cacheTS[key]) < 25000){
+  if(dataCache[key] && cacheTS[key] && (now - cacheTS[key]) < 28000){
     return dataCache[key];
   }
   try{
     let url = `${APPS_SCRIPT}?id=${SHEET_ID}&gid=${gid}&t=${now}`;
     if(range) url += `&range=${encodeURIComponent(range)}`;
-    const res = await fetch(url,{cache:'no-store'});
+    const res = await fetch(url, {cache:'no-store', redirect:'follow'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const text = await res.text();
     const rows = parseCSV(text);
-    dataCache[key] = rows;
-    cacheTS[key] = now;
+    /* Jangan cache kalau data kosong — supaya retry akan fetch semula */
+    const hasData = rows.length > 1 && rows.slice(1).some(r => r.some(c => c && c.toString().trim()));
+    if(hasData){
+      dataCache[key] = rows;
+      cacheTS[key] = now;
+    }
     return rows;
   }catch(e){
     return dataCache[key]||null;
@@ -595,8 +649,8 @@ async function fetchSheet(gid, range){
 /* ── TAHAP 1 — load tahun aktif sahaja ── */
 const TAHAP1_GIDS = {t1:49708938, t2:2043442714, t3:234073445};
 const TAHAP1_R = {
-  s:'A3:E34', ll1:'A41:D45', ll2:'A49:D53', la:'A56:D65',
-  pl1:'A70:D74', pl2:'A78:D82', pa:'A85:D94',
+  s:'A3:E39', ll1:'A44:D50', ll2:'A52:D58', la:'A60:D70',
+  pl1:'A73:D79', pl2:'A81:D87', pa:'A89:D99',
 };
 async function loadTahap1Year(yr){
   const gid = TAHAP1_GIDS[yr];
@@ -618,10 +672,11 @@ async function loadTahap1Year(yr){
   if(rpl1) dataCache[yr+'_pl1'] = rpl1;
   if(rpl2) dataCache[yr+'_pl2'] = rpl2;
   if(rpa)  dataCache[yr+'_pa']  = rpa;
-  /* Render */
+  /* Render Sukaneka */
   const hs = state[yr+'s']?.house || 'merah';
   const elS = document.getElementById('con-'+yr+'s');
   if(elS) elS.innerHTML = rs ? renderSukaneka(rs, hs) : placeholder();
+  /* Render 50M / 75M */
   const elL = document.getElementById('con-'+yr+'-50ml') || document.getElementById('con-'+yr+'-75ml');
   if(elL) elL.innerHTML = renderLarian(rll1, rll2, rla, 'Lelaki');
   const elP = document.getElementById('con-'+yr+'-50mp') || document.getElementById('con-'+yr+'-75mp');
@@ -692,27 +747,29 @@ function renderPerbarisan(rows, house){
     </ul>` : '<div class="empty-state">Tiada ahli perbarisan.</div>'}`;
 }
 
+/* ── RENDER LARIAN TAHAP 1 (50M / 75M) ──
+   Struktur setiap blok dalam sheet (A:D):
+     rows[0] = tajuk acara   e.g. "50 METER (LELAKI)"
+     rows[1] = label section e.g. "SARINGAN 1" / "SARINGAN 2" / kosong
+     rows[2] = header kolum  BIL | NAMA | KEDUDUKAN | RUMAH SUKAN
+     rows[3+]= data peserta
+   Kolum tetap: 0=BIL, 1=NAMA, 2=KEDUDUKAN, 3=RUMAH SUKAN               */
 function renderLarian(rowsS1, rowsS2, rowsAkhir, gender){
-  function section(rows, label, forceRumah){
-    if(!rows||rows.length<2) return '';
-    const hdr = rows[0].map(h=>h.toString().toUpperCase().trim());
-    const bilIdx  = hdr.findIndex(h=>h.includes('BIL'));
-    const namaIdx = hdr.findIndex(h=>h.includes('NAMA'));
-    const kedIdx  = hdr.findIndex(h=>h.includes('KEDUDUKAN'));
-    /* Saringan: RUMAH SUKAN ada di baris tajuk bukan header row — guna col 3 terus */
-    const rumahIdx = forceRumah ? 3 : hdr.findIndex(h=>h.includes('RUMAH'));
-    /* Tapis TIDAK LAYAK untuk peringkat Akhir sahaja (forceRumah=false = Akhir) */
-    const items = rows.slice(1).filter(r=>{
-      if(!r[namaIdx]||!r[namaIdx].toString().trim()) return false;
-      if(!forceRumah){
-        const nama = r[namaIdx].toString().toUpperCase().trim();
-        const ked  = kedIdx>=0 ? r[kedIdx]?.toString().toUpperCase().trim() : '';
-        if(nama==='TIDAK LAYAK' || ked==='TIDAK LAYAK') return false;
+  function section(rows, label, isAkhir){
+    if(!rows || rows.length < 4) return '';
+    /* Skip 3 baris header, ambil data sahaja */
+    const data = rows.slice(3).filter(r => r[1] && r[1].toString().trim());
+    if(!data.length) return '';
+    const items = data.filter(r => {
+      if(isAkhir){
+        const nama = r[1].toString().toUpperCase().trim();
+        const ked  = r[2]?.toString().toUpperCase().trim() || '';
+        if(nama === 'TIDAK LAYAK' || ked === 'TIDAK LAYAK') return false;
       }
       return true;
     });
     if(!items.length) return '';
-    items.sort((a,b)=>{const ka=parseInt(a[kedIdx])||999;const kb=parseInt(b[kedIdx])||999;return ka-kb;});
+    items.sort((a,b) => { const ka=parseInt(a[2])||999; const kb=parseInt(b[2])||999; return ka-kb; });
     return `
       <div style="margin-bottom:1.25rem">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">${label}</div>
@@ -720,25 +777,27 @@ function renderLarian(rowsS1, rowsS2, rowsAkhir, gender){
         <table class="live-table">
           <thead><tr>
             <th>#</th><th>Nama Peserta</th>
-            ${kedIdx>=0?'<th style="text-align:center">Kedudukan</th>':''}
-            ${rumahIdx>=0?'<th>Rumah Sukan</th>':''}
+            <th style="text-align:center">Kedudukan</th>
+            <th>Rumah Sukan</th>
           </tr></thead>
-          <tbody>${items.map((r,i)=>{
-            const ked=parseInt(r[kedIdx]);
-            const kedClass=ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
-            const rumah=(r[rumahIdx]||'').toLowerCase();
-            const hc=HOUSE_COLORS[rumah]||'#888';
+          <tbody>${items.map((r,i) => {
+            const ked = parseInt(r[2]);
+            const kedClass = ked===1?'ked-1':ked===2?'ked-2':ked===3?'ked-3':'ked-x';
+            const rumah = (r[3]||'').toLowerCase().trim();
+            const hc = HOUSE_COLORS[rumah] || '#888';
             return `<tr>
-              <td style="color:var(--ink-l);font-size:12px">${i+1}</td>
-              <td style="font-weight:500">${r[namaIdx]||'—'}</td>
-              ${kedIdx>=0?`<td style="text-align:center">${r[kedIdx]?`<span class="ked-badge ${kedClass}">${r[kedIdx]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>`:''}
-              ${rumahIdx>=0?`<td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[rumahIdx]||'—'}</span></td>`:''}
+              <td style="color:var(--ink-l);font-size:12px">${r[0]||i+1}</td>
+              <td style="font-weight:500">${r[1]||'—'}</td>
+              <td style="text-align:center">${r[2]?`<span class="ked-badge ${kedClass}">${r[2]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>
+              <td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[3]||'—'}</span></td>
             </tr>`;
           }).join('')}</tbody>
         </table></div>
       </div>`;
   }
-  const html = section(rowsS1,'Saringan 1',true) + section(rowsS2,'Saringan 2',true) + section(rowsAkhir,'Akhir',false);
+  const html = section(rowsS1,    'Saringan 1 — ' + gender, false)
+             + section(rowsS2,    'Saringan 2 — ' + gender, false)
+             + section(rowsAkhir, 'Akhir — '      + gender, true);
   return html || '<div class="empty-state">Tiada data.</div>';
 }
 
@@ -969,52 +1028,48 @@ function renderPingat(rows){
 /* ── TAHAP 2 EVENT RANGES ── */
 const TAHAP2_GID = { t4:0, t5:898276486, t6:568699660 };
 const TAHAP2_EV = {
-  /* S1: fetch A:D (rumah di idx 3), S2: fetch D:G (rumah di idx 0) */
-  '100ml':    { s1:'A3:D7',    s2:'D3:G7',    akhir:'A10:D18'  },
-  '100mp':    { s1:'A23:D27',  s2:'D23:G27',  akhir:'A30:D38'  },
-  '200ml':    { s1:'A44:D48',  s2:'D44:G48',  akhir:'A51:D59'  },
-  '200mp':    { s1:'A64:D68',  s2:'D64:G68',  akhir:'A71:D79'  },
-  'lontarl':  {                               akhir:'A85:D93'  },
-  'lontarp':  {                               akhir:'A97:D105' },
-  'lompatjl': {                               akhir:'A111:D119'},
-  'lompatjp': {                               akhir:'A123:D131'},
-  'lompattl': {                               akhir:'A137:D145'},
-  'lompattp': {                               akhir:'A149:D157'},
-  '4x100ml':  {                               akhir:'A163:D182'},
-  '4x100mp':  {                               akhir:'A187:D206'},
-  '4x200ml':  {                               akhir:'A212:D231'},
-  '4x200mp':  {                               akhir:'A236:D255'},
+  '100ml':    { combined:'A3:G7',    akhir:'A10:D18'  },
+  '100mp':    { combined:'A23:G27',  akhir:'A30:D38'  },
+  '200ml':    { combined:'A44:G48',  akhir:'A51:D59'  },
+  '200mp':    { combined:'A64:G68',  akhir:'A71:D79'  },
+  'lontarl':  {                      akhir:'A85:D93'  },
+  'lontarp':  {                      akhir:'A97:D105' },
+  'lompatjl': {                      akhir:'A111:D119'},
+  'lompatjp': {                      akhir:'A123:D131'},
+  'lompattl': {                      akhir:'A137:D145'},
+  'lompattp': {                      akhir:'A149:D157'},
+  '4x100ml':  {                      akhir:'A163:D182'},
+  '4x100mp':  {                      akhir:'A187:D206'},
+  '4x200ml':  {                      akhir:'A212:D231'},
+  '4x200mp':  {                      akhir:'A236:D255'},
 };
 
 async function loadTahap2Event(yr, ev){
-  const gid = TAHAP2_GID[yr];
+  const gid   = TAHAP2_GID[yr];
   const evCfg = TAHAP2_EV[ev];
   if(!evCfg) return;
-  const cacheKey = yr+'_'+ev;
+  const ck = yr+'_'+ev;
   const el = document.getElementById('con-'+yr);
   if(!el) return;
-
   el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
-
-  /* Fetch selari menggunakan smart cache */
-  if(evCfg.s1){
-    const [rs1, rs2, ra] = await Promise.all([
-      fetchSheet(gid, evCfg.s1),
-      fetchSheet(gid, evCfg.s2),
-      fetchSheet(gid, evCfg.akhir),
-    ]);
-    if(rs1) dataCache[cacheKey+'_s1'] = rs1;
-    if(rs2) dataCache[cacheKey+'_s2'] = rs2;
-    if(ra)  dataCache[cacheKey+'_akhir'] = ra;
+  if(evCfg.combined){
+    const rcomb = await fetchSheet(gid, evCfg.combined);
+    const ra    = await fetchSheet(gid, evCfg.akhir);
+    if(rcomb){
+      /* S1: A=0(BIL), B=1(NAMA), C=2(KED), D=3(RUMAH) */
+      dataCache[ck+'_s1'] = rcomb.map(r=>[r[0],r[1],r[2],r[3]]);
+      /* S2: E=4(BIL), F=5(NAMA), G=6(KED), D=3(RUMAH) → format sama [BIL,NAMA,KED,RUMAH] */
+      dataCache[ck+'_s2'] = rcomb.map(r=>[r[4],r[5],r[6],r[3]]);
+    }
+    if(ra) dataCache[ck+'_akhir'] = ra;
   } else {
     const ra = await fetchSheet(gid, evCfg.akhir);
-    if(ra) dataCache[cacheKey+'_akhir'] = ra;
+    if(ra) dataCache[ck+'_akhir'] = ra;
   }
-
   el.innerHTML = renderTahap2Event(
-    dataCache[cacheKey+'_s1']||null,
-    dataCache[cacheKey+'_s2']||null,
-    dataCache[cacheKey+'_akhir']||null
+    dataCache[ck+'_s1']   ||null,
+    dataCache[ck+'_s2']   ||null,
+    dataCache[ck+'_akhir']||null
   );
 }
 
@@ -1043,8 +1098,8 @@ function renderTahap2Event(rowsS1, rowsS2, rowsAkhir){
     if(isAkhir){
       let lastRumah = '';
       processedItems.forEach(r=>{
-        const raw = rumahIdx>=0 ? r[rumahIdx]?.toString().trim() : '';
-        const valid = ['MERAH','HIJAU','BIRU','KUNING'].includes(raw.toUpperCase());
+        const raw = (rumahIdx>=0 && r[rumahIdx]!=null) ? r[rumahIdx].toString().trim() : '';
+        const valid = raw ? ['MERAH','HIJAU','BIRU','KUNING'].includes(raw.toUpperCase()) : false;
         if(raw && valid){ lastRumah = raw; }
         else if(rumahIdx>=0 && lastRumah){ r[rumahIdx] = lastRumah; }
       });
@@ -1080,7 +1135,7 @@ function renderTahap2Event(rowsS1, rowsS2, rowsAkhir){
       </div>`;
   }
   const html = section(rowsS1,  'Saringan 1', false, 3, 1, 2)
-             + section(rowsS2,  'Saringan 2', false, 0, 2, 3)
+             + section(rowsS2,  'Saringan 2', false, 3, 1, 2)
              + section(rowsAkhir,'Akhir',      true,  3, 1, 2);
   return html||'<div class="empty-state">Tiada data.</div>';
 }
@@ -1103,7 +1158,8 @@ function go(id,btn){
   curPage=id;
   clearInterval(pageTimer);
   loadPage(id);
-  pageTimer=setInterval(()=>loadPage(id),REFRESH_MS);
+  const ms = REFRESH_MS[id] || 60000;
+  pageTimer = setInterval(()=>loadPage(id), ms);
 }
 
 /* ── LOAD PAGE ── */
@@ -1345,14 +1401,16 @@ async function showPerbarisanAkhir(btn){
   btn.classList.add('active');
   el.style.display = 'block';
   el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
-  const rows = await fetchSheet(59197173, 'A41:E41');
+  const rows = await fetchSheet(59197173, 'A41:G41');
   if(!rows||rows.length<1){ el.innerHTML='<div class="empty-state">Tiada data.</div>'; return; }
   const row = rows[0];
   const houses = [
-    {name:'MERAH',  val:row[1], hc:HOUSE_COLORS.merah},
-    {name:'HIJAU',  val:row[2], hc:HOUSE_COLORS.hijau},
-    {name:'BIRU',   val:row[3], hc:HOUSE_COLORS.biru},
-    {name:'KUNING', val:row[4], hc:HOUSE_COLORS.kuning},
+    {name:'MERAH',       val:row[1], hc:HOUSE_COLORS.merah},
+    {name:'HIJAU',       val:row[2], hc:HOUSE_COLORS.hijau},
+    {name:'BIRU',        val:row[3], hc:HOUSE_COLORS.biru},
+    {name:'KUNING',      val:row[4], hc:HOUSE_COLORS.kuning},
+    {name:'PPKI',        val:row[5], hc:'#a020f0'},
+    {name:'PRA SEKOLAH', val:row[6], hc:'#00c8c8'},
   ];
   el.innerHTML = `
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.75rem">Kedudukan Akhir Perbarisan</div>
@@ -1418,7 +1476,7 @@ async function showSukanekAkhir(yr, btn){
   el.style.display = 'block';
   el.innerHTML = '<div class="loading"><span class="spin"></span>Memuatkan...</div>';
   const gid = TAHAP1_GID[yr];
-  const rows = await fetchSheet(gid, 'A36:E36');
+  const rows = await fetchSheet(gid, 'A41:E41');
   if(!rows||rows.length<1){ el.innerHTML='<div class="empty-state">Tiada data.</div>'; return; }
   /* A36=label, B36=Merah, C36=Hijau, D36=Biru, E36=Kuning */
   const row = rows[0];
