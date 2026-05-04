@@ -853,7 +853,7 @@ function renderLarian(rowsS1, rowsS2, rowsAkhir, gender){
             const rumah = (r[3]||'').toLowerCase().trim();
             const hc = HOUSE_COLORS[rumah] || '#888';
             return `<tr>
-              <td style="color:var(--ink-l);font-size:12px">${r[0]||i+1}</td>
+              <td style="color:var(--ink-l);font-size:12px">${isAkhir ? i+1 : r[0]||i+1}</td>
               <td style="font-weight:500">${r[1]||'—'}</td>
               <td style="text-align:center">${r[2]?`<span class="ked-badge ${kedClass}">${r[2]}</span>`:'<span class="ked-badge ked-x">—</span>'}</td>
               <td><span class="house-tag" style="background:${hc}18;color:${hc}">${r[3]||'—'}</span></td>
@@ -1163,7 +1163,6 @@ function renderTahap2Event(rowsS1, rowsS2, rowsAkhir){
     if(!items.length) return '';
     const processedItems = items.map(r=>[...r]);
     /* Fill-forward HANYA untuk Akhir — sebab merged cells */
-    /* Saringan 1 & 2: setiap baris ada nilai sendiri, JANGAN fill-forward */
     if(isAkhir){
       let lastRumah = '';
       processedItems.forEach(r=>{
@@ -1504,6 +1503,7 @@ async function showPerbarisanAkhir(btn){
     {name:'PPKI',        val:row[5], hc:'#a020f0'},
     {name:'PRA SEKOLAH', val:row[6], hc:'#00c8c8'},
   ];
+  houses.sort((a,b)=>(parseInt(a.val)||999)-(parseInt(b.val)||999));
   el.innerHTML = `
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.75rem">Kedudukan Akhir Perbarisan</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
@@ -1541,6 +1541,7 @@ function showTarikTaliAkhir(gender, btn){
     }
     return {name:h.toUpperCase(), ked, hc:HOUSE_COLORS[h]||'#888'};
   });
+  results.sort((a,b)=>(parseInt(a.ked)||999)-(parseInt(b.ked)||999));
   el.innerHTML = `
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.75rem">
       Kedudukan Akhir — ${gender==='l'?'Lelaki':'Perempuan'}
@@ -1578,6 +1579,7 @@ async function showSukanekAkhir(yr, btn){
     {name:'BIRU',   val:row[3], hc:HOUSE_COLORS.biru},
     {name:'KUNING', val:row[4], hc:HOUSE_COLORS.kuning},
   ];
+  houses.sort((a,b)=>(parseInt(a.val)||999)-(parseInt(b.val)||999));
   el.innerHTML = `
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.75rem">Kedudukan Akhir Sukaneka</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
@@ -1611,6 +1613,7 @@ async function showPPKIAkhir(btn){
     {name:'BIRU',    val:row[3], hc:HOUSE_COLORS.biru},
     {name:'KUNING',  val:row[4], hc:HOUSE_COLORS.kuning},
   ];
+  houses.sort((a,b)=>(parseInt(a.val)||999)-(parseInt(b.val)||999));
   el.innerHTML = `
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fuschia);margin-bottom:.75rem">Kedudukan Akhir Sukaneka</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
